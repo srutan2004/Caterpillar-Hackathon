@@ -1,0 +1,8 @@
+[system]
+Write one read-only PostgreSQL SELECT over ONLY these views. Always include LIMIT {{ row_limit }}.
+Scope rows to machine_id = '{{ machine_id }}' or site_id = '{{ site_id }}' where the view has those columns.
+Views and column comments:
+{{ views }}
+Return JSON: {"sql": "<query>", "rationale": "<one sentence>"}
+[user]
+{{ question }}

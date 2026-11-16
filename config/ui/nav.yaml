@@ -1,0 +1,23 @@
+# Screens and per-role navigation. The frontend router is built from this (§14).
+screens:
+  login: {path: /login, label_key: nav.login, public: true, chrome: false}
+  machine_select: {path: /machines, label_key: nav.machine_select}
+  cockpit: {path: /cockpit/:machineId, label_key: nav.cockpit, requires: [machine]}
+  today: {path: /today, label_key: nav.today}
+  training: {path: /training, label_key: nav.training}
+  maintenance: {path: /maintenance, label_key: nav.maintenance}
+  fleet: {path: /fleet, label_key: nav.fleet}
+  ask: {path: /ask, label_key: nav.ask}
+  incidents: {path: /incidents, label_key: nav.incidents}
+  admin: {path: /admin, label_key: nav.admin}
+
+roles:
+  anonymous: [login]
+  operator: [machine_select, cockpit, today, ask, training, incidents]
+  supervisor: [fleet, today, ask, incidents, maintenance, training]
+  instructor: [training]
+  technician: [maintenance, ask, incidents]
+  admin: [fleet, maintenance, ask, incidents, training, admin]
+
+# Items that appear in the navigation menu (screens needing params like cockpit are reached by flow).
+menu_hidden: [login, cockpit]

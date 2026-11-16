@@ -1,0 +1,16 @@
+id: demo_start_time
+machine: EXE-01
+operator: op_021
+site: site_metro
+task: T-2045
+mode: planning                 # evaluated by the planner, not the live tick loop
+at_local: "07:15"
+preconditions_expected:
+  - {kind: charge, target_soc: 0.85, during: toolbox_talk}
+  - {kind: maintenance_check, alert_sensor: hydraulic.filter_dp}
+expect:
+  recommendation:
+    later_than_now: true
+    saving_vs_usual_min_at_least: 10
+    avoids_mid_task_charge: true
+  accept_reserves_charger: true

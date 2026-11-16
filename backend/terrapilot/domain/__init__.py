@@ -1,0 +1,53 @@
+"""Domain contracts shared by edge, cloud and API. Frozen at Checkpoint 1A (§17)."""
+
+from terrapilot.domain.models import (
+    Advisory,
+    Alert,
+    AlertEvent,
+    BehaviorEvent,
+    Candidate,
+    EnergyState,
+    GeofenceState,
+    MachineState,
+    ProximityTrack,
+    RawFrame,
+    StabilityState,
+    Task,
+    TaskState,
+)
+from terrapilot.domain.ws import (
+    AdvisoryMessage,
+    AlertMessage,
+    MaintenanceAlertMessage,
+    NoticeMessage,
+    PlanUpdateMessage,
+    RecommendationMessage,
+    StateDiffMessage,
+    TaskUpdateMessage,
+    WsMessage,
+)
+
+__all__ = [
+    "Advisory",
+    "AdvisoryMessage",
+    "Alert",
+    "AlertEvent",
+    "AlertMessage",
+    "BehaviorEvent",
+    "Candidate",
+    "EnergyState",
+    "GeofenceState",
+    "MachineState",
+    "MaintenanceAlertMessage",
+    "NoticeMessage",
+    "PlanUpdateMessage",
+    "ProximityTrack",
+    "RawFrame",
+    "RecommendationMessage",
+    "StabilityState",
+    "StateDiffMessage",
+    "Task",
+    "TaskState",
+    "TaskUpdateMessage",
+    "WsMessage",
+]

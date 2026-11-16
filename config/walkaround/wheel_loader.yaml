@@ -1,0 +1,13 @@
+id: walkaround_wheel_loader
+time_budget_s: 60
+items:
+  - {id: tyres, label_key: walkaround.item.tyres, critical: true, photo: on_issue}
+  - {id: hoses, label_key: walkaround.item.hoses, critical: true, photo: on_issue}
+  - {id: leaks, label_key: walkaround.item.leaks, critical: true, photo: on_issue}
+  - {id: bucket_teeth, label_key: walkaround.item.bucket_teeth, critical: false, photo: on_issue}
+  - {id: articulation_lock, label_key: walkaround.item.articulation_lock, critical: true, photo: none}
+  - {id: fluid_levels, label_key: walkaround.item.fluid_levels, critical: true, photo: none}
+  - {id: brakes_test, label_key: walkaround.item.brakes_test, critical: true, photo: none}
+  - {id: mirrors_cameras, label_key: walkaround.item.mirrors_cameras, critical: true, photo: none}
+  - {id: lights_beacon, label_key: walkaround.item.lights_beacon, critical: false, photo: none}
+  - {id: seatbelt, label_key: walkaround.item.seatbelt, critical: true, photo: on_issue}

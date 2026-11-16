@@ -1,0 +1,55 @@
+# Manual outlines (§7.7). `tp content --task manuals` expands each section with Groq (content_gen, Batch API)
+# using the spec values from the manifest(s) of that class; results go to the review queue.
+classes:
+  excavator:
+    manifests: [excavator_20t, excavator_20t_electric]
+    machine_name_key: machine.class.excavator
+  wheel_loader:
+    manifests: [wheel_loader_m]
+    machine_name_key: machine.class.wheel_loader
+  adt:
+    manifests: [adt_30t]
+    machine_name_key: machine.class.adt
+sections:
+  - id: safety
+    title: Safety
+    covers: [general hazards, exclusion zones and pedestrians, seatbelt and ROPS, working near utilities and overhead lines,
+             weather and lightning stop-work, high-voltage safety for electric variants]
+    spec_paths: [proximity.zones_m, seatbelt, envelopes]
+  - id: pre_start
+    title: Pre-start walkaround
+    covers: [walkaround checklist items, critical items that block start, reporting defects]
+    spec_paths: [walkaround]
+  - id: controls
+    title: Controls and instruments
+    covers: [control pattern, joystick functions, gauges and alert tiers, power modes]
+    spec_paths: [controls, specs.work_fuel_lph]
+  - id: operating
+    title: Operating techniques
+    covers: [efficient cycles, avoiding cavitation and relief stalls, working on slopes, idling and fuel economy]
+    spec_paths: [envelopes, idle, specs]
+  - id: maintenance
+    title: Maintenance intervals
+    covers: [service intervals and tasks, greasing, filter changes, track or tyre checks]
+    spec_paths: [service_intervals_ref, components]
+  - id: fluids
+    title: Fluids and capacities
+    covers: [fuel or battery capacity, refuel or charge procedure, fluid specifications]
+    spec_paths: [energy]
+  - id: sensor_limits
+    title: Sensor limits and alert responses
+    covers: [what each maintenance alert tier means, operator actions for monitor, service soon and stop, forecast alerts]
+    spec_paths: [maintenance_sensors]
+  - id: troubleshooting
+    title: Troubleshooting by fault code
+    covers: [one procedure per fault code with checks and safe-to-continue guidance from the catalogue]
+    procedure_ids: auto_from_fault_catalogue
+    spec_paths: [components]
+  - id: transport
+    title: Transport and lifting
+    covers: [loading on a trailer, tie-down, lifting points]
+    spec_paths: [specs.operating_mass_kg]
+common_sections:
+  - id: site_rules
+    title: Site rules (all machines)
+    covers: [radio protocol, spotters, PPE requirements, incident and near-miss reporting]

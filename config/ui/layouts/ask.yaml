@@ -1,0 +1,9 @@
+screen: ask
+device: any
+grid: {columns: 12, rows: 10, gap_token: space.3}
+modes:
+  normal: {hide: []}
+widgets:
+  - {id: header, type: ScreenHeader, area: [1, 1, 12, 1], bind: "screen:ask", props: {title_key: screen.ask.title, subtitle_key: screen.ask.subtitle}}
+  - {id: chat, type: ChatPanel, area: [1, 2, 8, 9], bind: null}
+  - {id: alerts, type: MaintenanceAlertCard, area: [9, 2, 4, 9], bind: "resource:maintenance_alerts"}

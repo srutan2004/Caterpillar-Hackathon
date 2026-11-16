@@ -1,0 +1,16 @@
+id: demo_electric_charging
+machine: EXE-01
+operator: op_021
+site: site_metro
+task: T-2045
+duration_s: 300
+tick_hz: 10
+time_scale: 60                 # 1 scenario second = 1 simulated minute for SoC dynamics
+baseline: {generator: excavator_trenching, skill: 0.7}
+initial_state: {battery.soc: 0.38}
+timeline:
+  - {t: 20,  inject: heavy_digging, params: {duration_s: 200}}
+  - {t: 240, inject: park_at_charger, params: {station: C1}}
+expect:
+  alerts_in_order: [SOC_FLOOR_PROJECTION]
+  advisories_in_order: [energy]

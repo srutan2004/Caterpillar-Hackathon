@@ -1,0 +1,9 @@
+screen: login
+device: any
+grid: {columns: 12, rows: 6, gap_token: space.4}
+modes:
+  normal: {hide: []}
+widgets:
+  - {id: brand, type: AppBrand, area: [4, 1, 6, 2], bind: app.product}
+  - {id: login_form, type: FormView, area: [4, 3, 6, 4], bind: "form:login",
+     props: {form_id: login, action: auth.login, on_success: navigate_default}}

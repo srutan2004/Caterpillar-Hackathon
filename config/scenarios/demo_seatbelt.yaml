@@ -1,0 +1,15 @@
+id: demo_seatbelt
+machine: EX-03
+operator: op_017
+site: site_metro
+task: T-2031
+duration_s: 90
+tick_hz: 10
+baseline: {generator: excavator_trenching, skill: 0.6}
+timeline:
+  - {t: 5,  set: {seat.belt_fastened: false}}
+  - {t: 60, set: {seat.belt_fastened: true}}
+expect:
+  alerts_in_order: [SEATBELT_UNFASTENED_ACTIVE]
+  escalations: [{rule: SEATBELT_UNFASTENED_ACTIVE, to: warning, not_before_s: 30}]
+  behavior_events: [belt_off]

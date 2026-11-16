@@ -1,0 +1,200 @@
+# Structured fault-code catalogue (§7.7). Exported to fault_codes.csv and the fault_codes table.
+# safe_to_continue is owned here — never by an LLM (§13.1 decision authority).
+- code: HYD-PUMP-01
+  component: hydraulic_pump
+  severity: service_soon
+  classes: [excavator, wheel_loader]
+  title_key: fault.hyd_pump_01
+  description: Main hydraulic pump efficiency loss with rising case-drain temperature and pressure ripple.
+  probable_causes: [internal pump wear, contaminated oil, cavitation from restricted suction]
+  checks: [measure case-drain flow, sample hydraulic oil for wear metals, inspect suction strainer]
+  safe_to_continue: "limited"
+  manual_ref: {section: troubleshooting, procedure_id: HYD-PUMP-01}
+  part_numbers: [HP-2200-KIT, HF-1100]
+- code: HYD-FILT-03
+  component: hydraulic_pump
+  severity: service_soon
+  classes: [excavator, wheel_loader]
+  title_key: fault.hyd_filt_03
+  description: Hydraulic return filter differential pressure above service limit.
+  probable_causes: [filter loading from contamination, overdue filter change, cold oil]
+  checks: [check filter bypass indicator, confirm oil temperature, replace return filter]
+  safe_to_continue: "yes"
+  manual_ref: {section: troubleshooting, procedure_id: HYD-FILT-03}
+  part_numbers: [HF-1100]
+- code: HYD-TEMP-02
+  component: hydraulic_pump
+  severity: stop
+  classes: [excavator, wheel_loader, adt]
+  title_key: fault.hyd_temp_02
+  description: Hydraulic oil over-temperature.
+  probable_causes: [oil cooler blocked, relief valve stalling, low oil level]
+  checks: [check oil level, clean oil cooler fins, review relief-stall events]
+  safe_to_continue: "no"
+  manual_ref: {section: troubleshooting, procedure_id: HYD-TEMP-02}
+  part_numbers: []
+- code: COOL-RAD-02
+  component: cooling
+  severity: service_soon
+  classes: [excavator, wheel_loader, adt]
+  title_key: fault.cool_rad_02
+  description: Radiator core restriction causing elevated coolant temperature at high fan duty.
+  probable_causes: [dust packing of radiator fins, debris screen blocked, fan belt slip]
+  checks: [inspect and blow out radiator core, check debris screen, check fan belt tension]
+  safe_to_continue: "limited"
+  manual_ref: {section: troubleshooting, procedure_id: COOL-RAD-02}
+  part_numbers: [RS-400]
+- code: COOL-TEMP-01
+  component: cooling
+  severity: stop
+  classes: [excavator, wheel_loader, adt]
+  title_key: fault.cool_temp_01
+  description: Engine coolant over-temperature.
+  probable_causes: [low coolant, thermostat stuck, water pump failure, radiator blocked]
+  checks: [allow engine to cool, check coolant level, inspect water pump]
+  safe_to_continue: "no"
+  manual_ref: {section: troubleshooting, procedure_id: COOL-TEMP-01}
+  part_numbers: [TH-082, WP-310]
+- code: ENG-OILP-01
+  component: engine
+  severity: stop
+  classes: [excavator, wheel_loader, adt]
+  title_key: fault.eng_oilp_01
+  description: Engine oil pressure below minimum for current engine speed.
+  probable_causes: [low oil level, oil pump wear, bearing wear, sender fault]
+  checks: [stop engine, check oil level, verify with mechanical gauge]
+  safe_to_continue: "no"
+  manual_ref: {section: troubleshooting, procedure_id: ENG-OILP-01}
+  part_numbers: [OP-120, OF-050]
+- code: ENG-AIR-01
+  component: engine
+  severity: service_soon
+  classes: [excavator, wheel_loader, adt]
+  title_key: fault.eng_air_01
+  description: Air filter restriction above service limit.
+  probable_causes: [dust loading, pre-cleaner blocked]
+  checks: [clean or replace outer element, check pre-cleaner]
+  safe_to_continue: "yes"
+  manual_ref: {section: troubleshooting, procedure_id: ENG-AIR-01}
+  part_numbers: [AF-OUT-70, AF-IN-70]
+- code: ENG-WIF-01
+  component: engine
+  severity: service_soon
+  classes: [excavator, wheel_loader, adt]
+  title_key: fault.eng_wif_01
+  description: Water detected in fuel.
+  probable_causes: [contaminated fuel delivery, condensation in tank]
+  checks: [drain water separator, check fuel supply]
+  safe_to_continue: "limited"
+  manual_ref: {section: troubleshooting, procedure_id: ENG-WIF-01}
+  part_numbers: [FF-PRI-20]
+- code: DPF-SOOT-01
+  component: dpf
+  severity: service_soon
+  classes: [excavator, wheel_loader, adt]
+  title_key: fault.dpf_soot_01
+  description: DPF soot load high; parked regeneration required.
+  probable_causes: [extended low-load operation, excessive idling, interrupted regenerations]
+  checks: [perform parked regeneration, review idle ratio]
+  safe_to_continue: "limited"
+  manual_ref: {section: troubleshooting, procedure_id: DPF-SOOT-01}
+  part_numbers: []
+- code: ELE-ALT-01
+  component: electrical
+  severity: service_soon
+  classes: [excavator, wheel_loader, adt]
+  title_key: fault.ele_alt_01
+  description: System voltage falling while engine running; alternator not charging.
+  probable_causes: [alternator failure, belt slip, wiring fault]
+  checks: [measure charging voltage, inspect belt, check connections]
+  safe_to_continue: "limited"
+  manual_ref: {section: troubleshooting, procedure_id: ELE-ALT-01}
+  part_numbers: [ALT-24V-80A]
+- code: SWG-VIB-01
+  component: swing_drive
+  severity: service_soon
+  classes: [excavator]
+  title_key: fault.swg_vib_01
+  description: Swing drive vibration above service zone.
+  probable_causes: [swing bearing wear, low gear oil, pinion damage]
+  checks: [check swing gear oil, inspect for metal particles, measure bearing play]
+  safe_to_continue: "limited"
+  manual_ref: {section: troubleshooting, procedure_id: SWG-VIB-01}
+  part_numbers: [SG-OIL-20, SB-KIT-01]
+- code: UC-TRK-01
+  component: undercarriage
+  severity: monitor
+  classes: [excavator]
+  title_key: fault.uc_trk_01
+  description: Track sag outside the adjustment range.
+  probable_causes: [track adjuster leak, pin and bushing wear]
+  checks: [measure sag, adjust tension, inspect adjuster cylinder]
+  safe_to_continue: "yes"
+  manual_ref: {section: maintenance, procedure_id: UC-TRK-01}
+  part_numbers: [TA-SEAL-01]
+- code: GET-WEAR-01
+  component: get
+  severity: monitor
+  classes: [excavator, wheel_loader]
+  title_key: fault.get_wear_01
+  description: Bucket teeth or cutting edge worn beyond limit, or tooth missing.
+  probable_causes: [abrasive material, normal wear]
+  checks: [inspect teeth and adapters, replace worn teeth]
+  safe_to_continue: "yes"
+  manual_ref: {section: maintenance, procedure_id: GET-WEAR-01}
+  part_numbers: [TT-SET-5, CE-2400]
+- code: TYR-LEAK-01
+  component: tyres
+  severity: service_soon
+  classes: [wheel_loader, adt]
+  title_key: fault.tyr_leak_01
+  description: Tyre pressure falling steadily (slow leak).
+  probable_causes: [puncture, valve stem leak, rim seal damage]
+  checks: [inspect tyre and valve, check bead seat, repair or replace]
+  safe_to_continue: "limited"
+  manual_ref: {section: troubleshooting, procedure_id: TYR-LEAK-01}
+  part_numbers: [TV-STEM-01, TYRE-23.5R25]
+- code: TRN-TEMP-01
+  component: transmission
+  severity: service_soon
+  classes: [wheel_loader, adt]
+  title_key: fault.trn_temp_01
+  description: Transmission oil temperature above service limit.
+  probable_causes: [cooler restriction, clutch slip, low oil]
+  checks: [check oil level, inspect cooler, review gear-hunting]
+  safe_to_continue: "limited"
+  manual_ref: {section: troubleshooting, procedure_id: TRN-TEMP-01}
+  part_numbers: [TF-300]
+- code: BRK-TEMP-01
+  component: brakes
+  severity: stop
+  classes: [wheel_loader, adt]
+  title_key: fault.brk_temp_01
+  description: Service brake temperature critical.
+  probable_causes: [dragging brake, excessive downhill braking without retarder]
+  checks: [stop and allow brakes to cool, inspect brake circuit, review retarder use]
+  safe_to_continue: "no"
+  manual_ref: {section: troubleshooting, procedure_id: BRK-TEMP-01}
+  part_numbers: [BP-KIT-01]
+- code: BAT-CELL-01
+  component: battery
+  severity: service_soon
+  classes: [excavator]
+  title_key: fault.bat_cell_01
+  description: Battery cell voltage imbalance increasing.
+  probable_causes: [weak cell module, balancing circuit fault]
+  checks: [run balancing cycle, check module temperatures, dealer diagnostics]
+  safe_to_continue: "limited"
+  manual_ref: {section: troubleshooting, procedure_id: BAT-CELL-01}
+  part_numbers: [BM-MOD-48]
+- code: BAT-ISO-01
+  component: electrical
+  severity: stop
+  classes: [excavator]
+  title_key: fault.bat_iso_01
+  description: High-voltage insulation resistance low.
+  probable_causes: [moisture ingress, damaged HV cable]
+  checks: [stop work, isolate HV system, qualified HV technician only]
+  safe_to_continue: "no"
+  manual_ref: {section: safety, procedure_id: BAT-ISO-01}
+  part_numbers: [HV-CABLE-01]

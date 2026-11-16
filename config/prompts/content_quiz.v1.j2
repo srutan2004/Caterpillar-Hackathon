@@ -1,0 +1,9 @@
+[system]
+Write {{ n_questions }} multiple-choice quiz questions grounded ONLY in the manual chunk below.
+Each question has exactly 4 options and one correct answer. Avoid trick questions.
+Return JSON: {"questions": [{"stem": "...", "options": ["...", "...", "...", "..."], "answer_index": 0, "difficulty": "easy|medium|hard"}]}
+[user]
+module: {{ module_id }}
+source_chunk_id: {{ chunk_id }}
+manual_chunk:
+{{ chunk_text }}

@@ -1,0 +1,39 @@
+# Input guard (§13.1): limits, prompt-injection detection, moderation and topical rails for Ask mode.
+limits:
+  max_chars: 2000
+  max_images: 1
+  max_image_mb_ref: media.yaml#uploads.image_max_mb
+
+injection:
+  task: injection_detect           # Llama Prompt Guard 2 on Groq; heuristic patterns if unavailable
+  threshold_ref: llm.yaml#tasks.injection_detect.threshold
+  # heuristic fallback + always-on patterns (also applied to retrieved chunks and cab notes before use)
+  patterns:
+    - "ignore (all|any|the|previous|prior) (instructions|rules|prompts?)"
+    - "disregard (the|all|previous) (instructions|system)"
+    - "you are now"
+    - "system prompt"
+    - "act as (an?|the) "
+    - "reveal (your|the) (instructions|prompt|rules)"
+    - "jailbreak"
+
+moderation:
+  task: moderation                 # gpt-oss-safeguard; fail_mode closed → blocked if unavailable
+  block_labels: [VIOLATION]
+  categories_blocked: [safety_override, harmful, sensitive_data]
+
+topical:
+  # NeMo-style topical rails: these redirect politely instead of answering
+  redirect:
+    legal_liability:
+      patterns: ["\\b(lawsuit|sue|liab(le|ility)|insurance claim|compensation|legal advice)\\b"]
+      message_key: ask.redirect.legal
+      action: contact_supervisor
+    medical:
+      patterns: ["\\b(diagnos(e|is)|medication|symptom|injur(y|ed) treatment)\\b"]
+      message_key: ask.redirect.medical
+      action: contact_supervisor
+    off_topic:
+      patterns: ["\\b(weather in (paris|london)|stock price|cricket score|recipe|joke|poem|movie)\\b"]
+      message_key: ask.redirect.off_topic
+      action: none

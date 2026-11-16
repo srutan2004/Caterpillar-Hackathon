@@ -1,0 +1,20 @@
+id: service_request
+title_key: form.service_request.title
+submit_key: form.service_request.submit
+action: {method: POST, path: /api/service-requests}
+autofill: [machine_id, requested_by]
+schema:
+  type: object
+  required: [kind]
+  properties:
+    kind:
+      type: string
+      title: form.service_request.kind
+      oneOf:
+        - {const: part, title: form.service_request.kind_part}
+        - {const: service, title: form.service_request.kind_service}
+    fault_code: {type: string, title: form.service_request.fault_code}
+    notes: {type: string, title: form.service_request.notes, maxLength: 2000}
+ui_schema:
+  kind: {"ui:widget": radio}
+  notes: {"ui:widget": textarea}

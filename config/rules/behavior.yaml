@@ -1,0 +1,48 @@
+# Behaviour episode definitions (§10.5). Thresholds reference the manifest; limits not in the
+# manifest live here. Episodes are detected by state machines in Phase 2.
+episodes:
+  idle:
+    when: "engine.running and controls.neutral and motion.ground_speed_kph < manifest.motion.moving_threshold_kph and hydraulic.pump_pressure < manifest.motion.hydraulic_active_pressure_bar"
+    min_s: manifest.idle.min_episode_s
+    excessive_s: manifest.idle.excessive_s
+  high_rpm_idle:
+    when: "episode.idle and engine.rpm > manifest.idle.high_rpm_threshold"
+    min_s: 60
+  harsh_swing:
+    applies_to: [excavator]
+    when: "abs(swing.accel_deg_s2) > 45"
+    min_s: 0
+  travel_boom_raised:
+    applies_to: [excavator]
+    when: "motion.ground_speed_kph > manifest.envelopes.travel_speed_boom_raised_kph.caution and boom.angle_deg > 35"
+    min_s: 3
+  over_slope:
+    when: "abs(imu.roll_deg) > manifest.envelopes.side_slope_deg.caution"
+    min_s: 5
+  relief_stall:
+    applies_to: [excavator, wheel_loader]
+    when: "hydraulic.pump_pressure > manifest.envelopes.relief_pressure_bar"
+    min_s: 4
+  overload:
+    when: "payload.weight_t > manifest.specs.rated_payload_t"
+    min_s: 1
+  cavitation:
+    applies_to: [excavator, wheel_loader]
+    when: "hydraulic.pressure_ripple > 14 and engine.load_pct > 70"
+    min_s: 2
+  belt_off:
+    when: "seat.occupied and not seat.belt_fastened"
+    min_s: manifest.seatbelt.grace_s
+statistical:
+  robust_z_threshold: 3.5
+  baseline_window_cycles: 400
+ml:
+  isolation_forest: {contamination: 0.01, n_estimators: 200}
+costs:
+  fuel_price_ref: app.costs.diesel_price_per_l
+  co2_factor_ref: app.costs.co2_kg_per_l_diesel
+adaptive_assignment:
+  - {signal: cavitation, min_count_7d: 3, module: stick_bucket_control}
+  - {signal: idle, min_ratio_7d: 0.25, module: fuel_efficient_operation}
+  - {signal: belt_off, min_count_7d: 1, module: restraint_safety}
+  - {signal: near_miss_pedestrian, min_count_30d: 1, module: proximity_awareness}

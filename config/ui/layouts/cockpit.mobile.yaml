@@ -1,0 +1,11 @@
+screen: cockpit
+device: mobile
+grid: {columns: 4, rows: 10, gap_token: space.2}
+modes:
+  normal: {hide: []}
+widgets:
+  - {id: copilot, type: CopilotBanner, area: [1,1,4,1], bind: advisory}
+  - {id: alerts, type: AlertStack, area: [1,2,4,3], bind: alerts, max_visible_ref: app.ui.alert_stack_max}
+  - {id: task_card, type: TaskProgress, area: [1,5,4,2], bind: state.task}
+  - {id: radar, type: ProximityRadar, area: [1,7,2,2], bind: state.proximity, zones_ref: manifest.proximity.zones_m}
+  - {id: fuel_card, type: EnergyCard, area: [3,7,2,2], bind: state.energy}

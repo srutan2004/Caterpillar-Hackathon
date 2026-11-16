@@ -1,0 +1,173 @@
+# Degradation, maintenance sensors and injected fault modes (§7.5).
+# dh/dt = −λ_c · (β/η)(t/η)^(β−1) · AF, with t = operating hours since the component was last renewed.
+acceleration:
+  t_ref_c: 25
+  alpha_T: 0.025
+  alpha_dust: 0.35          # × PM10 / pm10_norm
+  pm10_norm: 150
+  alpha_hum: 0.10           # × RH / 100
+  alpha_alt: 0.05           # × altitude / 1000 m
+  alpha_abuse: 0.8          # × operator abuse rate (unsafe events per cycle × 100)
+  duty_severity_by_task: {trench: 1.0, bulk_excavation: 1.1, truck_loading: 1.05, grading: 0.85, backfill: 0.9,
+                           load_and_carry: 1.0, stockpile: 0.95, haul: 1.0}
+  soil_severity: {clay: 1.0, sand: 1.05, rock: 1.3, gravel: 1.1, fill: 0.95}
+components:
+  engine:          {lambda: 1.0, beta: 2.2, eta_h: 14000, h_fail: 0.15, faults: [{code: ENG-OILP-01, h_below: 0.22}]}
+  hydraulic_pump:  {lambda: 1.0, beta: 2.0, eta_h: 9000,  h_fail: 0.15, faults: [{code: HYD-PUMP-01, h_below: 0.40}, {code: HYD-TEMP-02, h_below: 0.22}]}
+  swing_drive:     {lambda: 1.0, beta: 2.4, eta_h: 12000, h_fail: 0.15, faults: [{code: SWG-VIB-01, h_below: 0.35}]}
+  undercarriage:   {lambda: 1.0, beta: 1.8, eta_h: 7000,  h_fail: 0.10, faults: [{code: UC-TRK-01, h_below: 0.40}]}
+  get:             {lambda: 1.0, beta: 1.5, eta_h: 1600,  h_fail: 0.05, faults: [{code: GET-WEAR-01, h_below: 0.30}]}
+  dpf:             {lambda: 1.0, beta: 1.6, eta_h: 8000,  h_fail: 0.15, faults: []}
+  final_drive:     {lambda: 1.0, beta: 2.6, eta_h: 15000, h_fail: 0.15, faults: []}
+  cooling:         {lambda: 1.0, beta: 1.9, eta_h: 10000, h_fail: 0.15, faults: [{code: COOL-RAD-02, h_below: 0.35}, {code: COOL-TEMP-01, h_below: 0.20}]}
+  electrical:      {lambda: 1.0, beta: 1.7, eta_h: 11000, h_fail: 0.15, faults: [{code: ELE-ALT-01, h_below: 0.25}]}
+  battery:         {lambda: 1.0, beta: 2.0, eta_h: 16000, h_fail: 0.20, faults: [{code: BAT-CELL-01, h_below: 0.40}]}
+  transmission:    {lambda: 1.0, beta: 2.3, eta_h: 13000, h_fail: 0.15, faults: [{code: TRN-TEMP-01, h_below: 0.35}]}
+  brakes:          {lambda: 1.0, beta: 1.8, eta_h: 6000,  h_fail: 0.15, faults: [{code: BRK-TEMP-01, h_below: 0.20}]}
+  tyres:           {lambda: 1.0, beta: 1.6, eta_h: 4500,  h_fail: 0.10, faults: [{code: TYR-LEAK-01, h_below: 0.25}]}
+  axles:           {lambda: 1.0, beta: 2.5, eta_h: 16000, h_fail: 0.15, faults: []}
+  articulation:    {lambda: 1.0, beta: 2.2, eta_h: 14000, h_fail: 0.15, faults: []}
+  dump_body:       {lambda: 1.0, beta: 2.0, eta_h: 12000, h_fail: 0.15, faults: []}
+  bucket_linkage:  {lambda: 1.0, beta: 2.0, eta_h: 9000,  h_fail: 0.15, faults: []}
+initial_age_fraction: {min: 0.05, max: 0.75}      # of eta_h
+maintenance:
+  service_restore: {service_250h: {engine: 0.02, dpf: 0.01}, service_500h: {hydraulic_pump: 0.03, engine: 0.03},
+                    service_1000h: {swing_drive: 0.05, final_drive: 0.05, transmission: 0.05, axles: 0.03},
+                    service_2000h: {hydraulic_pump: 0.08, cooling: 0.10, battery: 0.03}, dpf_clean: {dpf: 0.6}}
+  corrective_on_fault_prob: 0.75
+  corrective_delay_days: {min: 1, max: 6}
+  h_reset: {min: 0.9, max: 0.99}
+  technician_experience_k: 0.08       # repair duration × (1 − k · experience_years^0.5)
+  part_wait_factor: 1.0               # days of part lead time added when stock is 0
+  duration_noise_sigma: 0.25
+fluid_samples:
+  every_h: 250
+  compartments:
+    engine_oil: {component: engine, powertrains: [diesel, hybrid],
+                 fe_ppm: {base: 18, wear_k: 140}, cu_ppm: {base: 4, wear_k: 40}, si_ppm: {base: 6, dust_k: 12, air_k: 4},
+                 na_ppm: {base: 5, coolant_leak_k: 120}, soot_pct: {base: 0.6, dpf_k: 3.2}, viscosity_cst: {base: 14.5, change_k: -3.5}}
+    hydraulic_oil: {component: hydraulic_pump, powertrains: [diesel, hybrid, electric],
+                    fe_ppm: {base: 6, wear_k: 70}, cu_ppm: {base: 3, wear_k: 30}, si_ppm: {base: 4, dust_k: 8, air_k: 0},
+                    na_ppm: {base: 2, coolant_leak_k: 0}, soot_pct: {base: 0.0, dpf_k: 0}, viscosity_cst: {base: 46, change_k: -8}}
+  noise_sd_frac: 0.12
+  iso_4406: {healthy: "16/14/11", worn: "19/17/14", bad: "21/19/16"}
+
+# Maintenance sensor generation: s(t) = baseline(ambient, load, rpm) + g_c(1 − h_c) + fault_mode_k + ε
+# `wear_gain` is the symptom at h = 0 relative to healthy; `per_h_since_service` models consumables (filters).
+sensors:
+  engine.coolant_temp:        {component: cooling, base: 86, amb_k: 0.22, load_k: 7, idle_offset: -6, noise_sd: 0.7, wear_gain: 14}
+  engine.oil_pressure:        {component: engine, base: 150, rpm_k: 0.14, amb_k: -0.5, load_k: 0, idle_offset: 0, noise_sd: 8, wear_gain: -150}
+  hydraulic.oil_temp:         {component: hydraulic_pump, base: 60, amb_k: 0.40, load_k: 12, idle_offset: -8, noise_sd: 0.8, wear_gain: 18}
+  hydraulic.pressure_ripple:  {component: hydraulic_pump, base: 4.0, amb_k: 0, load_k: 2.0, idle_offset: -1.5, noise_sd: 0.4, wear_gain: 10}
+  hydraulic.filter_dp:        {component: hydraulic_pump, base: 0.7, amb_k: -0.004, load_k: 0.3, idle_offset: -0.2, noise_sd: 0.05, wear_gain: 0.2,
+                               per_h_since_service: {item: service_500h, k: 0.0014}}
+  engine.air_filter_restriction: {component: engine, base: 1.8, amb_k: 0, load_k: 0.8, idle_offset: -0.6, noise_sd: 0.12, wear_gain: 0,
+                               per_h_since_service: {item: service_500h, k: 0.0035, dust_scaled: true}}
+  dpf.soot_load_pct:          {component: dpf, sawtooth: {rate_per_h: 1.6, idle_rate_factor: 1.8, regen_at: 80, regen_to: 15}, noise_sd: 1.5, wear_gain: 12}
+  fuel.water_in_fuel:         {component: engine, boolean: true}
+  electrical.system_voltage:  {component: electrical, base: 27.8, amb_k: -0.01, load_k: -0.2, idle_offset: -0.3, noise_sd: 0.08, wear_gain: -1.4}
+  swing.vibration_rms:        {component: swing_drive, base: 2.8, amb_k: 0, load_k: 1.6, idle_offset: -1.8, noise_sd: 0.25, wear_gain: 9}
+  undercarriage.track_tension_mm: {component: undercarriage, base: 28, amb_k: 0, load_k: 0, idle_offset: 0, noise_sd: 1.0, wear_gain: 12,
+                               per_h_since_service: {item: service_250h, k: 0.02}}
+  transmission.oil_temp:      {component: transmission, base: 82, amb_k: 0.3, load_k: 10, idle_offset: -10, noise_sd: 0.9, wear_gain: 18}
+  brakes.temp:                {component: brakes, base: 110, amb_k: 0.4, load_k: 70, idle_offset: -40, noise_sd: 10, wear_gain: 60}
+  tyre.pressure_kpa:          {component: tyres, base_by_class: {wheel_loader: 450, adt: 480}, amb_k: 1.4, load_k: 6, idle_offset: 0, noise_sd: 3, wear_gain: -10}
+  tyre.temp:                  {component: tyres, base: 42, amb_k: 0.6, load_k: 12, idle_offset: -8, noise_sd: 1.0, wear_gain: 8}
+  suspension.strut_pressure:  {component: axles, base: 88, amb_k: 0.1, load_k: 25, idle_offset: -10, noise_sd: 2.0, wear_gain: -25}
+  battery.cell_dv_mv:         {component: battery, base: 16, amb_k: 0.1, load_k: 6, idle_offset: -3, noise_sd: 1.5, wear_gain: 55}
+  battery.pack_temp:          {component: battery, base: 29, amb_k: 0.45, load_k: 7, idle_offset: -3, noise_sd: 0.4, wear_gain: 6}
+  battery.insulation_kohm:    {component: electrical, base: 2600, amb_k: -6, load_k: 0, idle_offset: 0, noise_sd: 60, wear_gain: -1400}
+  # Auxiliary channels: generated when the manifest lists the sensor; used by signatures and normalisation.
+  engine.fan_speed_pct:       {component: cooling, auxiliary: true, base: 52, amb_k: 1.3, load_k: 22, idle_offset: -15, noise_sd: 2.0, wear_gain: 20, clip: [0, 100]}
+  hydraulic.flow_eff:         {component: hydraulic_pump, auxiliary: true, base: 0.96, amb_k: -0.0005, load_k: 0, idle_offset: 0, noise_sd: 0.006, wear_gain: -0.16, clip: [0, 1]}
+  engine.load_pct:            {auxiliary: true, derived: load_pct}
+  engine.rpm:                 {auxiliary: true, derived: rpm}
+
+# Injected, labelled fault modes (truth_fault_modes). magnitude = sensor offset at failure time.
+fault_modes:
+  radiator_clogging:
+    classes: [excavator, wheel_loader, adt]
+    powertrains: [diesel, hybrid]
+    component: cooling
+    sensor: engine.coolant_temp
+    rate_per_1000h: 0.9
+    dust_rate_k: 1.5                  # rate × (1 + k · (pm10 − pm10_norm)+ / pm10_norm)
+    shape: exponential
+    magnitude: 24
+    time_to_failure_h: {min: 40, max: 140}
+    failure_code: COOL-TEMP-01
+    detect_code: COOL-RAD-02
+    also: {engine.fan_speed_pct: 40}
+  filter_plugging:
+    classes: [excavator, wheel_loader]
+    powertrains: [diesel, hybrid, electric]
+    component: hydraulic_pump
+    sensor: hydraulic.filter_dp
+    rate_per_1000h: 1.2
+    shape: ramp
+    magnitude: 2.6
+    time_to_failure_h: {min: 60, max: 200}
+    failure_code: HYD-FILT-03
+    detect_code: HYD-FILT-03
+    also: {hydraulic.oil_temp: 5}
+  pump_wear:
+    classes: [excavator, wheel_loader]
+    powertrains: [diesel, hybrid, electric]
+    component: hydraulic_pump
+    sensor: hydraulic.pressure_ripple
+    rate_per_1000h: 0.6
+    shape: exponential
+    magnitude: 14
+    time_to_failure_h: {min: 120, max: 400}
+    failure_code: HYD-PUMP-01
+    detect_code: HYD-PUMP-01
+    also: {hydraulic.oil_temp: 9, hydraulic.flow_eff: -0.14}
+  slow_tyre_leak:
+    classes: [wheel_loader, adt]
+    powertrains: [diesel, hybrid]
+    component: tyres
+    sensor: tyre.pressure_kpa
+    rate_per_1000h: 2.0
+    shape: ramp
+    magnitude: -190
+    time_to_failure_h: {min: 12, max: 60}
+    failure_code: TYR-LEAK-01
+    detect_code: TYR-LEAK-01
+    also: {tyre.temp: 9}
+  cell_imbalance:
+    classes: [excavator]
+    powertrains: [electric]
+    component: battery
+    sensor: battery.cell_dv_mv
+    rate_per_1000h: 1.5
+    shape: exponential
+    magnitude: 130
+    time_to_failure_h: {min: 150, max: 450}
+    failure_code: BAT-CELL-01
+    detect_code: BAT-CELL-01
+    also: {battery.pack_temp: 3}
+  alternator_failure:
+    classes: [excavator, wheel_loader, adt]
+    powertrains: [diesel, hybrid]
+    component: electrical
+    sensor: electrical.system_voltage
+    rate_per_1000h: 0.5
+    shape: exponential
+    magnitude: -5.2
+    time_to_failure_h: {min: 20, max: 90}
+    failure_code: ELE-ALT-01
+    detect_code: ELE-ALT-01
+  water_in_fuel:
+    classes: [excavator, wheel_loader, adt]
+    powertrains: [diesel, hybrid]
+    component: engine
+    sensor: fuel.water_in_fuel
+    rate_per_1000h: 1.0
+    shape: step
+    magnitude: 1
+    time_to_failure_h: {min: 4, max: 30}
+    failure_code: ENG-WIF-01
+    detect_code: ENG-WIF-01
+detection_snr: 3.0                     # first_detectable = symptom > snr × noise_sd
+historical_fix_prob_before_failure: 0.55
+historical_fix_delay_h_after_detectable: {min: 8, max: 72}

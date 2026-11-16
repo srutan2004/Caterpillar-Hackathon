@@ -1,0 +1,14 @@
+id: booking
+title_key: form.booking.title
+submit_key: form.booking.submit
+action: {method: POST, path: /api/training/bookings}
+autofill: [user_id]
+schema:
+  type: object
+  required: [slot_id, module_id]
+  properties:
+    slot_id: {type: string, title: form.booking.slot}
+    module_id: {type: string, title: form.booking.module}
+    notes: {type: string, title: form.booking.notes, maxLength: 1000}
+ui_schema:
+  notes: {"ui:widget": textarea}

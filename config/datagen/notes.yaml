@@ -1,0 +1,24 @@
+# Templated cab notes (§7.3 Voice/notes). LLM paraphrases come from `tp content --task notes`.
+per_operator_per_week: 1.5
+templates:
+  maintenance:
+    - "Hearing a whine from the hydraulic pump when the stick is under load."
+    - "Coolant gauge running higher than usual this afternoon."
+    - "Track on the left side looks loose, needs tension check."
+    - "Bucket tooth second from left is badly worn."
+    - "Small hydraulic leak near the boom cylinder fitting."
+    - "Battery took longer than normal to charge on the break."
+    - "Tyre on the front right looks low."
+  safety:
+    - "Pedestrian walked behind the machine without radio call near the {zone}."
+    - "Spotter missing at the trench edge for about ten minutes."
+    - "Ground is soft near the {zone} after the rain, bench edge looks unstable."
+    - "Dust is heavy on the haul road, visibility poor."
+  site:
+    - "Trucks are bunching at the dump, waiting a lot today."
+    - "Survey pegs missing on the east side of the {zone}."
+    - "Access ramp needs grading before the next shift."
+  other:
+    - "Radio channel two is noisy."
+    - "AC in the cab is weak."
+tag_weights: {maintenance: 0.4, safety: 0.3, site: 0.2, other: 0.1}

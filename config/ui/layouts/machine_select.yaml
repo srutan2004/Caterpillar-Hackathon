@@ -1,0 +1,10 @@
+screen: machine_select
+device: any
+grid: {columns: 12, rows: 8, gap_token: space.3}
+modes:
+  normal: {hide: []}
+widgets:
+  - {id: header, type: ScreenHeader, area: [1, 1, 12, 1], bind: "screen:machine_select",
+     props: {title_key: screen.machine_select.title, subtitle_key: screen.machine_select.subtitle}}
+  - {id: machines, type: MachineList, area: [1, 2, 12, 7], bind: "resource:machines",
+     props: {columns: [id, model, status, powertrain], on_select: open_cockpit}}

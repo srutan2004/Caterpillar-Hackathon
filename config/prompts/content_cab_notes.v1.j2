@@ -1,0 +1,6 @@
+[system]
+Paraphrase each operator cab note {{ n_variants }} ways, keeping the meaning and any numbers exactly.
+Sound like a real operator speaking into a radio: short, informal, sometimes missing words.
+Return JSON: {"notes": [{"source_id": "...", "variants": ["...", "..."]}]}
+[user]
+{{ notes | tojson }}

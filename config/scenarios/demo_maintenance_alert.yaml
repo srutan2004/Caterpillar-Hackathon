@@ -1,0 +1,20 @@
+id: demo_maintenance_alert
+machine: EX-03
+operator: op_017
+site: site_metro
+task: T-2031
+duration_s: 360
+tick_hz: 10
+time_scale: 120                # compresses a dusty afternoon into minutes
+baseline: {generator: excavator_trenching, skill: 0.6}
+timeline:
+  - {t: 5,   weather: {pm10: 420, temp_c: 36}}
+  - {t: 10,  inject: fault_mode, params: {mode: radiator_clogging, progress_from: 0.2, progress_to: 0.75, over_s: 330}}
+expect:
+  maintenance_alert:
+    component: cooling
+    layers_in_order: [rate, forecast, signature]
+    merged_into_one: true
+    tier_rises_to: service_soon
+  work_order_draft: true
+  bundled_service_item: service_250h

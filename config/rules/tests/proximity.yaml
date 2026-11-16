@@ -1,0 +1,18 @@
+id: person_zone_and_ttc
+manifest: excavator_20t
+tick_s: 1
+until_s: 20
+frames:
+  - {t: 0, set: {proximity.nearest_person_m: 30, proximity.min_ttc_s: null}}
+  - {t: 2, set: {proximity.nearest_person_m: 14, proximity.min_ttc_s: 5}}
+  - {t: 4, set: {proximity.nearest_person_m: 7, proximity.min_ttc_s: 2}}
+  - {t: 6, set: {proximity.nearest_person_m: 3.5, proximity.min_ttc_s: 0}}
+  - {t: 10, set: {proximity.nearest_person_m: 25, proximity.min_ttc_s: null}}
+expect:
+  - {t: 2, rule: PERSON_TTC, phase: open, severity: caution}
+  - {t: 4, rule: PERSON_IN_ZONE_CAUTION, phase: open, severity: caution}
+  - {t: 4, rule: PERSON_TTC, phase: escalate, severity: warning}
+  - {t: 6, rule: PERSON_IN_ZONE_WARNING, phase: open, severity: warning}
+  - {t: 12, rule: PERSON_IN_ZONE_CAUTION, phase: clear, severity: caution}
+  - {t: 12, rule: PERSON_IN_ZONE_WARNING, phase: clear, severity: warning}
+  - {t: 12, rule: PERSON_TTC, phase: clear, severity: warning}

@@ -1,0 +1,37 @@
+# Layer D multivariate signatures (§10.13). Conditions are evaluated on windowed features.
+- id: SIG_HYD_PUMP_WEAR
+  component: hydraulic_pump
+  all_of: ["trend(hydraulic.oil_temp_resid) > 0.3/h", "trend(hydraulic.pressure_ripple) > 0.05/h", "hydraulic.flow_eff < 0.9"]
+  window_h: 24
+  tier: service_soon
+  fault_catalogue_ref: HYD-PUMP-01
+- id: SIG_RADIATOR_CLOGGING
+  component: cooling
+  all_of: ["engine.coolant_temp_resid > 4", "engine.fan_speed_pct > 90", "site.pm10 > 150"]
+  window_h: 6
+  tier: service_soon
+  fault_catalogue_ref: COOL-RAD-02
+- id: SIG_HYD_FILTER_PLUGGING
+  component: hydraulic_pump
+  all_of: ["trend(hydraulic.filter_dp) > 0.01/h", "hydraulic.oil_temp_resid > 2"]
+  window_h: 24
+  tier: service_soon
+  fault_catalogue_ref: HYD-FILT-03
+- id: SIG_SLOW_TYRE_LEAK
+  component: tyres
+  all_of: ["trend(tyre.pressure_kpa) < -1.5/h", "tyre.temp_resid > 3"]
+  window_h: 12
+  tier: service_soon
+  fault_catalogue_ref: TYR-LEAK-01
+- id: SIG_CELL_IMBALANCE
+  component: battery
+  all_of: ["trend(battery.cell_dv_mv) > 0.4/h", "battery.pack_temp_resid > 1.5"]
+  window_h: 48
+  tier: service_soon
+  fault_catalogue_ref: BAT-CELL-01
+- id: SIG_ALTERNATOR_FAILURE
+  component: electrical
+  all_of: ["electrical.system_voltage < 25.0", "trend(electrical.system_voltage) < -0.05/h", "engine.rpm > 1000"]
+  window_h: 6
+  tier: service_soon
+  fault_catalogue_ref: ELE-ALT-01

@@ -1,0 +1,73 @@
+# Baseline motion generators for the live simulator (§7.6). Keyframes are bucket-tip targets in the arm
+# plane: r = radial distance (m), z = height vs. ground (m), bucket = absolute bucket angle (deg), swing (deg).
+# `dig_depth` in z is replaced by the task's design depth (plus any over-dig injection).
+excavator_trenching:
+  class: excavator
+  cycle_s: 26
+  skill_speed_k: 0.35            # cycle_s × (1 − k·(skill − 0.5))
+  phases:                        # fraction of the cycle, in order
+    - {name: dig, until: 0.35, from: {r: 6.2, z: dig_depth, bucket: -110, swing: 0}, to: {r: 4.2, z: dig_depth, bucket: -30, swing: 0}}
+    - {name: swing_loaded, until: 0.57, from: {r: 4.2, z: 1.2, bucket: -30, swing: 0}, to: {r: 5.0, z: 1.8, bucket: -30, swing: swing_deg}}
+    - {name: dump, until: 0.70, from: {r: 5.0, z: 1.8, bucket: -30, swing: swing_deg}, to: {r: 5.2, z: 1.8, bucket: -150, swing: swing_deg}}
+    - {name: swing_empty, until: 1.0, from: {r: 5.2, z: 1.8, bucket: -150, swing: swing_deg}, to: {r: 6.2, z: 0.3, bucket: -110, swing: 0}}
+  swing_deg: 60
+  signals:
+    engine.rpm: {dig: 1850, swing_loaded: 1800, dump: 1750, swing_empty: 1800}
+    engine.load_pct: {dig: 82, swing_loaded: 65, dump: 45, swing_empty: 55}
+    hydraulic.pump_pressure: {dig: 285, swing_loaded: 190, dump: 120, swing_empty: 150}
+    hydraulic.pressure_ripple: {dig: 5.5, swing_loaded: 4.2, dump: 3.5, swing_empty: 3.8}
+  steady:
+    engine.coolant_temp: 88
+    hydraulic.oil_temp: 66
+    engine.oil_pressure: 400
+    engine.fan_speed_pct: 58
+    electrical.system_voltage: 27.8
+    hydraulic.filter_dp: 0.9
+    swing.vibration_rms: 3.2
+    imu.pitch_deg: 0.8
+    imu.roll_deg: 1.0
+  noise_sd: {engine.rpm: 15, hydraulic.pump_pressure: 6, engine.coolant_temp: 0.2, hydraulic.oil_temp: 0.2, imu.roll_deg: 0.15}
+  payload_t_per_cycle: 1.9
+wheel_loader_carry:
+  class: wheel_loader
+  cycle_s: 45
+  phases:
+    - {name: load, until: 0.3}
+    - {name: carry, until: 0.6}
+    - {name: dump, until: 0.7}
+    - {name: return, until: 1.0}
+  signals:
+    engine.rpm: {load: 1900, carry: 1700, dump: 1500, return: 1700}
+    engine.load_pct: {load: 85, carry: 60, dump: 40, return: 45}
+    hydraulic.pump_pressure: {load: 240, carry: 120, dump: 150, return: 60}
+    motion.ground_speed_kph: {load: 2, carry: 11, dump: 0, return: 14}
+  steady: {engine.coolant_temp: 89, hydraulic.oil_temp: 64, engine.oil_pressure: 390, imu.pitch_deg: 0.5, imu.roll_deg: 0.8}
+  noise_sd: {engine.rpm: 15, motion.ground_speed_kph: 0.4}
+  payload_t_per_cycle: 5.0
+adt_haul:
+  class: adt
+  cycle_s: 600
+  phases:
+    - {name: load, until: 0.3}
+    - {name: haul, until: 0.6}
+    - {name: dump, until: 0.65}
+    - {name: return, until: 1.0}
+  signals:
+    engine.rpm: {load: 900, haul: 1800, dump: 1200, return: 1700}
+    engine.load_pct: {load: 20, haul: 80, dump: 45, return: 50}
+    motion.ground_speed_kph: {load: 0, haul: 24, dump: 0, return: 32}
+  steady: {engine.coolant_temp: 90, engine.oil_pressure: 380, imu.pitch_deg: 1.0, imu.roll_deg: 0.6}
+  noise_sd: {engine.rpm: 20, motion.ground_speed_kph: 0.6}
+  payload_t_per_cycle: 26.0
+by_class: {excavator: excavator_trenching, wheel_loader: wheel_loader_carry, adt: adt_haul}
+injections:
+  idle: {rpm: 900, pressure: 20, load_pct: 18}
+  cavitation: {ripple: 16, load_pct: 84, duration_s: 20}
+  over_dig: {duration_s: 15}
+  approach_buried_utility: {closing_speed_ms: 0.1, start_clearance_multiple: 2.6, extra_start_m: 1.5, duration_s: 100, stop_clearance_fraction: 0.6}
+  side_slope: {ramp_s: 5}
+  extend_reach: {r: 8.6, z: -0.5, bucket: -60, swing: 90, ramp_s: 8}
+  person: {drop_after_s: 45, drop_distance_m: 35}
+  heavy_digging: {consumption_factor: 1.6}
+  g_spike: {accel_g: 2.4, duration_s: 0.4}
+spawn_clearance_from_utilities_m: 25

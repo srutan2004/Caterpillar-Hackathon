@@ -1,0 +1,15 @@
+# Server-driven form (JSON Schema + UI schema). Every `title` is an i18n key; the renderer translates it.
+id: login
+title_key: form.login.title
+submit_key: form.login.submit
+action: {method: POST, path: /api/auth/login}
+errors: {401: form.login.error_invalid}
+schema:
+  type: object
+  required: [username, pin]
+  properties:
+    username: {type: string, title: form.login.username, minLength: 1, maxLength: 64}
+    pin: {type: string, title: form.login.pin, minLength: 4, maxLength: 12, pattern: "^[0-9]+$"}
+ui_schema:
+  username: {"ui:autofocus": true, "ui:autocomplete": username}
+  pin: {"ui:widget": password, "ui:autocomplete": current-password, "ui:inputmode": numeric}

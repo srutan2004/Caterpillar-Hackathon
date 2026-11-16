@@ -1,0 +1,146 @@
+# LLM gateway configuration (§4.1, §6.5, §12.3). Model IDs live ONLY here.
+# Groq retires/renames models over time: `tp llm-check` verifies every ID against GET /openai/v1/models.
+profile_env: TP_PROFILE            # online | offline
+providers:
+  groq:
+    sdk: groq
+    base_url: https://api.groq.com/openai/v1
+    api_key_env: GROQ_API_KEY
+    verify_models_on_start: true
+    max_retries_sdk: 0             # the gateway owns retries/backoff
+    # Models that accept response_format.type=json_schema; others get json_object + the schema in the prompt.
+    json_schema_models: [openai/gpt-oss-20b, openai/gpt-oss-120b, qwen/qwen3.8-27b]
+    # Models that accept image content parts (vision).
+    vision_models: [qwen/qwen3.8-27b]
+    # Tasks whose model is not a chat model are checked for availability only.
+    non_chat_tasks: [stt, injection_detect, embeddings]
+  ollama:
+    base_url_env: OLLAMA_BASE_URL
+    profiles: [offline]
+  local:
+    kinds: [embeddings, stt]
+  template:
+    i18n_namespace: llm_template
+
+# Groq free tier observed 2026-09-24: 8000 TPM and 1000 requests/day per chat model (x-ratelimit-* headers).
+limits:                              # set to your Groq account tier; also adapts from x-ratelimit-* response headers
+  qwen/qwen3.8-27b:              {rpm: 30, tpm: 8000}
+  openai/gpt-oss-120b:           {rpm: 30, tpm: 8000}
+  openai/gpt-oss-20b:            {rpm: 30, tpm: 8000}
+  openai/gpt-oss-safeguard-20b:  {rpm: 30, tpm: 8000}
+  meta-llama/llama-prompt-guard-2-86m: {rpm: 30, tpm: 15000}
+  whisper-large-v3-turbo:        {rpm: 20, tpm: 100000}
+  whisper-large-v3:              {rpm: 20, tpm: 100000}
+
+# Lower number = higher priority lane. Low-priority work yields when headroom is low.
+priority_lanes:
+  live_narration: 0
+  moderation: 0
+  injection_detect: 0
+  ask_router: 1
+  ask_answer: 1
+  text_to_sql: 1
+  vlm_troubleshoot: 1
+  stt: 1
+  maint_explainer: 2
+  plan_explainer: 2
+  summaries: 2
+  eval_judge: 3
+  content_gen: 3
+  llm_check: 3
+low_headroom_fraction: 0.15        # below this remaining fraction, lanes >= 2 wait
+
+resilience:
+  retry: {max_attempts: 3, base_ms: 250, max_ms: 4000, jitter: 0.3, on_status: [429, 500, 502, 503, 504]}
+  circuit_breaker: {failure_threshold: 5, reset_after_s: 60}
+
+cache:
+  backend: memory                  # memory | redis
+  default_ttl_s: 300
+  max_entries: 2048
+
+tasks:
+  live_narration:
+    provider: groq
+    model: qwen/qwen3.8-27b          # ~160 ms on Groq; the template is shown first anyway
+    temperature: 0.2
+    max_tokens: 60
+    timeout_ms: 1200
+    retry: false                   # narrator never retries; it falls back to the template
+    response_format: {type: json_schema, schema_ref: schemas/narration.json}
+    prompt: prompts/live_narration.v3.j2
+    cache: {ttl_s: 30, key: [category, facts, locale]}
+    fallback: [template]
+  ask_router:
+    {provider: groq, model: qwen/qwen3.8-27b, temperature: 0, max_tokens: 300, timeout_ms: 2500,
+     prompt: prompts/ask_router.v1.j2, response_format: {type: json_object},
+     fallback: ["groq:openai/gpt-oss-20b", keyword_router]}
+  ask_answer:
+    {provider: groq, model: openai/gpt-oss-120b, stream: true, temperature: 0.2, max_tokens: 900, timeout_ms: 10000,
+     params: {reasoning_effort: low}, prompt: prompts/ask_answer.v1.j2, response_format: {type: json_schema, schema_ref: schemas/answer.json},
+     fallback: ["groq:openai/gpt-oss-20b", "ollama:qwen2.5:7b-instruct"]}
+  text_to_sql:
+    {provider: groq, model: openai/gpt-oss-120b, temperature: 0, max_tokens: 800, timeout_ms: 8000, params: {reasoning_effort: medium},
+     prompt: prompts/text_to_sql.v1.j2, response_format: {type: json_schema, schema_ref: schemas/sql.json},
+     fallback: ["groq:qwen/qwen3.8-27b", cannot_answer]}
+  vlm_troubleshoot:
+    {provider: groq, model: qwen/qwen3.8-27b, samples: 3, max_image_px: 1280, temperature: 0.7, max_tokens: 200,
+     timeout_ms: 12000, prompt: prompts/vlm_troubleshoot.v1.j2,
+     response_format: {type: json_schema, schema_ref: schemas/vlm.json},
+     fallback: [escalate]}
+  stt:              {provider: groq, model: whisper-large-v3-turbo, timeout_ms: 15000, fallback: ["groq:whisper-large-v3", "local:faster-whisper-small"]}
+  moderation:
+    {provider: groq, model: openai/gpt-oss-safeguard-20b, temperature: 0, max_tokens: 300, timeout_ms: 8000, fail_mode: closed,
+     params: {reasoning_effort: low}, prompt: prompts/moderation.v1.j2, response_format: {type: json_object}}
+  injection_detect: {provider: groq, model: meta-llama/llama-prompt-guard-2-86m, timeout_ms: 3000, threshold: 0.5, fallback: [heuristic_regex]}
+  maint_explainer:
+    {provider: groq, model: openai/gpt-oss-120b, temperature: 0.2, max_tokens: 600, timeout_ms: 6000, params: {reasoning_effort: low},
+     prompt: prompts/maint_explainer.v1.j2, response_format: {type: json_schema, schema_ref: schemas/maint_explainer.json},
+     fallback: [template]}
+  plan_explainer:
+    {provider: groq, model: qwen/qwen3.8-27b, temperature: 0.2, max_tokens: 120, timeout_ms: 2500,
+     prompt: prompts/plan_explainer.v1.j2, response_format: {type: json_schema, schema_ref: schemas/narration.json},
+     fallback: [template]}
+  summaries:
+    {provider: groq, model: openai/gpt-oss-20b, temperature: 0.2, max_tokens: 700, timeout_ms: 5000, params: {reasoning_effort: low},
+     prompt: prompts/summaries.v1.j2, response_format: {type: json_object}, fallback: [template]}
+  content_gen:
+    provider: groq
+    model: openai/gpt-oss-120b
+    batch_api: true
+    temperature: 0.4
+    max_tokens: 6000
+    timeout_ms: 120000
+    params: {reasoning_effort: low}
+    fallback: ["groq:openai/gpt-oss-20b"]
+    subtasks:
+      manuals: {prompt: prompts/content_manual_section.v1.j2, response_format: {type: text}, target_words: 900,
+                numeric_check: {revise_prompt: prompts/content_manual_revise.v1.j2, max_revisions: 3}}
+      quizzes: {prompt: prompts/content_quiz.v1.j2, response_format: {type: json_object}, n_questions: 4}
+      notes: {prompt: prompts/content_cab_notes.v1.j2, response_format: {type: json_object}, n_variants: 3}
+  # A different model family from the answer model (gpt-oss) to reduce self-preference bias (§13.2).
+  eval_judge:       {provider: groq, model: qwen/qwen3.8-27b, temperature: 0, max_tokens: 300, timeout_ms: 20000, fallback: ["groq:openai/gpt-oss-20b"]}
+  embeddings:       {provider: local, model: BAAI/bge-small-en-v1.5}
+  llm_check:        {provider: groq, model: qwen/qwen3.8-27b, temperature: 0, max_tokens: 5, timeout_ms: 5000}
+
+# Offline profile: each online task is re-pointed here when TP_PROFILE=offline.
+offline_overrides:
+  live_narration: {provider: ollama, model: "qwen2.5:7b-instruct", fallback: [template]}
+  ask_router: {provider: ollama, model: "qwen2.5:7b-instruct", fallback: [keyword_router]}
+  ask_answer: {provider: ollama, model: "qwen2.5:7b-instruct", fallback: []}
+  text_to_sql: {provider: ollama, model: "qwen2.5:7b-instruct", fallback: [cannot_answer]}
+  vlm_troubleshoot: {provider: ollama, model: "qwen2.5vl:7b", fallback: [escalate]}
+  maint_explainer: {provider: template, model: template}
+  plan_explainer: {provider: template, model: template}
+  summaries: {provider: template, model: template}
+
+redaction:
+  pseudonymise: [operator_name, badge_id, phone]
+  never_send: [driver_camera_frames]
+  strip_exif: true
+  max_image_bytes: 4000000
+
+content:
+  review_queue_dir: review_queue
+  approved_dir: knowledge
+  batch_completion_window: 24h

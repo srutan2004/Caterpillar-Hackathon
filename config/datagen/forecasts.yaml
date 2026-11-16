@@ -1,0 +1,15 @@
+# Forecast = truth + error that grows with lead time (§7.3). The optimiser sees realistic uncertainty.
+variables:
+  temp_c:        {sd0: 0.6, sd_per_h: 0.05, ar_phi: 0.85}
+  rh:            {sd0: 3.0, sd_per_h: 0.15, ar_phi: 0.85, clip: [5, 100]}
+  rain_mm:       {sd0: 0.3, sd_per_h: 0.06, ar_phi: 0.6, clip: [0, null], multiplicative_sd: 0.35, miss_prob_per_h: 0.004}
+  wind_ms:       {sd0: 0.5, sd_per_h: 0.04, ar_phi: 0.8, clip: [0, null]}
+  gust_ms:       {sd0: 0.8, sd_per_h: 0.06, ar_phi: 0.8, clip: [0, null]}
+  visibility_m:  {sd0: 300, sd_per_h: 25, ar_phi: 0.8, clip: [50, 10000]}
+  lightning_km:  {sd0: 2.0, sd_per_h: 0.3, ar_phi: 0.7, clip: [0, 100]}
+  pm10:          {sd0: 15, sd_per_h: 1.5, ar_phi: 0.85, clip: [5, null]}
+truck_availability:
+  horizon_h: 24
+  breakdown_prob_per_day: 0.03
+  sd0: 0.3
+  sd_per_h: 0.03

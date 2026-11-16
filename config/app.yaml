@@ -1,0 +1,130 @@
+# Application-level configuration. The product name lives here only (§0).
+product:
+  name: TerraPilot
+  tagline_key: app.tagline
+  version: 0.1.0
+
+locales:
+  default: en
+  available: [en, hi]
+
+features:
+  copilot_live: true
+  copilot_ask: true
+  training_hub: true
+  maintenance_alerts: true
+  start_time_recommender: true
+  supervisor_views: true
+  voice_notes: true
+  pwa: true
+
+auth:
+  jwt_algorithm: HS256
+  token_ttl_min: 720
+  roles: [operator, supervisor, instructor, technician, admin]
+  pin_hash:
+    algorithm: pbkdf2_sha256
+    iterations: 120000
+
+api:
+  prefix: /api
+  ws:
+    machine_path: /ws/machines/{machine_id}
+    fleet_path: /ws/fleet/{site_id}
+    heartbeat_s: 10
+
+refresh:
+  bootstrap_s: 300
+  layout_s: 300
+  shift_s: 60
+  alerts_s: 5
+  ws_reconnect_ms: [500, 1000, 2000, 5000]
+
+ui:
+  default_device: cab
+  devices: [cab, mobile, desk]
+  device_fallback:              # layout lookup order when a screen has no layout for the device
+    desk: [cab]
+    mobile: []
+    cab: []
+  default_screen_by_role:
+    anonymous: login
+    operator: machine_select
+    supervisor: fleet
+    instructor: training
+    technician: maintenance
+    admin: fleet
+  alert_stack_max: 4
+  state_diff_throttle_ms: 100
+
+latency_budgets_ms:
+  tick_processing: 30
+  alert_to_screen: 150
+  advisory_template: 200
+  llm_narration: 2500
+  llm_narration_p95_target: 1200
+
+energy:
+  soc_floor: 0.15
+
+# Site calendar: one source of truth shared with the generator (inlined at load time).
+site_calendar:
+  timezone: ref:datagen/world.yaml#timezone
+  shift: ref:datagen/world.yaml#shift
+
+costs:
+  currency: INR
+  diesel_price_per_l: 92.0
+  electricity_price_per_kwh: 9.5
+  co2_kg_per_l_diesel: 2.68
+  co2_kg_per_kwh_grid: 0.71
+
+blackbox:
+  pre_s: 30
+  post_s: 15
+  g_spike_threshold_g: 1.8        # IMU acceleration that triggers an automatic incident
+  frame_hz: 5                     # stored frame rate (ticks are decimated)
+
+edge:
+  grade_tolerance_m: 0.03         # within this the bucket is "on grade"
+  dig_line_window_s: 30           # utility distance = closest bucket approach over this window (the dig line)
+  track_velocity_alpha: 0.5       # smoothing for detection-derived velocities
+  person_drop_after_s: 3          # forget a track after this long unseen
+  telemetry_persist_every_s: 1    # telemetry_raw write cadence
+  sensor_persist_every_s: 60      # live sensor_1min rows for maintenance alerting
+
+cab_notes:
+  # keyword tagging (§10.3.4); the LLM classifier refines tags when Groq is available (Phase 3A)
+  tags:
+    maintenance: [leak, whine, noise, coolant, temperature, hot, gauge, track, tooth, teeth, tyre, tire, battery, charge, filter, hose, oil, vibration, brake]
+    safety: [pedestrian, person, spotter, unsafe, soft, unstable, edge, visibility, dust, near miss, slip, fall]
+    site: [truck, trucks, dump, ramp, survey, peg, access, road, queue, waiting]
+  default_tag: other
+  audio_max_mb: 10
+  media_dir: media/notes
+walkaround_media_dir: media/walkaround
+
+telemetry_retention:
+  raw_days: 3
+
+# Operator wellbeing (§10.4.7). Fatigue runs on the edge; camera frames never leave the machine.
+fatigue:
+  ear_closed_threshold: 0.21      # eye aspect ratio below this counts as closed
+  window_s: 60                    # PERCLOS window
+  microsleep_s: 1.0
+  circadian_peak_hour: 16         # alertness peak; the low is 12 h away
+  heat_ref_c: 32
+  break_min: 10
+  weights: {intercept: -3.2, perclos: 6.0, microsleeps: 0.45, hours: 0.22, circadian: 0.8, heat: 0.05}
+  tiers: {advisory: 0.55, caution: 0.7, warning: 0.85}
+wbv:                              # ISO 2631-1 A(8); EU directive defaults
+  axis_weights: {x: 1.4, y: 1.4, z: 1.0}
+  action_value_ms2: 0.5
+  limit_value_ms2: 1.15
+p2p:                              # §10.4.3 machine-to-machine proximity over Redis (stands in for V2V radio)
+  channel: "tp:p2p:{site_id}"
+  broadcast_hz: 2
+  stale_after_s: 5
+  zones_m: {advisory: 40, caution: 25, warning: 12}
+  ttc_s: {caution: 8, warning: 4}
+  blind_spot_deg: 60              # reversing arc behind a machine

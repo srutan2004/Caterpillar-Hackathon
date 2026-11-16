@@ -1,0 +1,171 @@
+# Maintenance sensor limits (§6.6, §10.13). Bands use [low, high); null = open-ended.
+# `direction: high` means rising values are bad; `low` means falling values are bad.
+# `catalogue_ref` names the fault-catalogue entry (action, parts, safe_to_continue) for this sensor's alerts,
+# optionally per tier.
+coolant_temp:
+  catalogue_ref: {default: COOL-RAD-02, stop: COOL-TEMP-01}     # fault catalogue entry for alerts from this sensor
+  unit: degC
+  direction: high
+  trend_limit: {per_h: 0.5, window_h: 3, tier: monitor}   # slow drift (layer B), robust slope per machine-hour
+  bands: {normal: [null, 98], monitor: [98, 103], service_soon: [103, 108], stop: [108, null]}
+  debounce_s: 30
+  rate_limit: {per_min: 1.5, window_min: 5, tier: service_soon}          # rising too fast
+  forecast: {model: holt, horizon_h: 72, lead_time_ref: parts_lead_time}  # time-to-threshold
+  normalise: {by: [ambient_temp, engine_load_pct]}                        # residual used for peer/drift
+oil_pressure_vs_rpm:
+  catalogue_ref: ENG-OILP-01     # fault catalogue entry for alerts from this sensor
+  unit: kPa
+  direction: low
+  curve: {rpm: [800, 1200, 1800, 2000], min_kpa: [100, 180, 260, 280]}  # limit is a function of rpm
+  bands_on_margin: {monitor: 0.15, service_soon: 0.05, stop: 0.0}
+  debounce_s: 10
+hyd_oil_temp:
+  catalogue_ref: {default: HYD-PUMP-01, stop: HYD-TEMP-02}     # fault catalogue entry for alerts from this sensor
+  unit: degC
+  direction: high
+  trend_limit: {per_h: 0.5, window_h: 3, tier: monitor}   # slow drift (layer B), robust slope per machine-hour
+  bands: {normal: [null, 82], monitor: [82, 88], service_soon: [88, 95], stop: [95, null]}
+  debounce_s: 30
+  rate_limit: {per_min: 1.5, window_min: 5, tier: service_soon}
+  forecast: {model: holt, horizon_h: 72, lead_time_ref: parts_lead_time}
+  normalise: {by: [ambient_temp, engine_load_pct]}
+pump_ripple:
+  catalogue_ref: HYD-PUMP-01     # fault catalogue entry for alerts from this sensor
+  unit: bar
+  direction: high
+  trend_limit: {per_h: 0.05, window_h: 12, tier: monitor}   # slow drift (layer B), robust slope per machine-hour
+  bands: {normal: [null, 8], monitor: [8, 12], service_soon: [12, 18], stop: [18, null]}
+  debounce_s: 60
+  forecast: {model: holt, horizon_h: 168, lead_time_ref: parts_lead_time}
+filter_dp:
+  catalogue_ref: HYD-FILT-03     # fault catalogue entry for alerts from this sensor
+  unit: bar
+  direction: high
+  trend_limit: {per_h: 0.01, window_h: 12, tier: monitor}   # slow drift (layer B), robust slope per machine-hour
+  bands: {normal: [null, 1.5], monitor: [1.5, 2.2], service_soon: [2.2, 3.0], stop: [3.0, null]}
+  debounce_s: 60
+  forecast: {model: holt, horizon_h: 168, lead_time_ref: parts_lead_time}
+air_restriction:
+  catalogue_ref: ENG-AIR-01     # fault catalogue entry for alerts from this sensor
+  unit: kPa
+  direction: high
+  trend_limit: {per_h: 0.02, window_h: 12, tier: monitor}   # slow drift (layer B), robust slope per machine-hour
+  bands: {normal: [null, 4.0], monitor: [4.0, 5.5], service_soon: [5.5, 6.2], stop: [6.2, null]}
+  debounce_s: 60
+  forecast: {model: holt, horizon_h: 168, lead_time_ref: parts_lead_time}
+  normalise: {by: [dust_pm10]}
+dpf_soot:
+  catalogue_ref: DPF-SOOT-01     # fault catalogue entry for alerts from this sensor
+  unit: pct
+  direction: high
+  bands: {normal: [null, 70], monitor: [70, 85], service_soon: [85, 100], stop: [100, null]}
+  debounce_s: 60
+  forecast: {model: holt, horizon_h: 72, lead_time_ref: regen_planning}
+wif:
+  catalogue_ref: ENG-WIF-01     # fault catalogue entry for alerts from this sensor
+  unit: bool
+  direction: high
+  boolean: {true_tier: service_soon}
+  debounce_s: 5
+sys_voltage:
+  catalogue_ref: ELE-ALT-01     # fault catalogue entry for alerts from this sensor
+  unit: V
+  direction: low
+  bands: {stop: [null, 22.5], service_soon: [22.5, 24.0], monitor: [24.0, 25.5], normal: [25.5, null]}
+  debounce_s: 20
+swing_vib:
+  catalogue_ref: SWG-VIB-01     # fault catalogue entry for alerts from this sensor
+  unit: mm_s
+  direction: high
+  trend_limit: {per_h: 0.05, window_h: 24, tier: monitor}   # slow drift (layer B), robust slope per machine-hour
+  bands: {normal: [null, 7.1], monitor: [7.1, 11.2], service_soon: [11.2, 18.0], stop: [18.0, null]}  # ISO 10816 style zones
+  debounce_s: 120
+  forecast: {model: holt, horizon_h: 336, lead_time_ref: parts_lead_time}
+track_tension:
+  catalogue_ref: UC-TRK-01     # fault catalogue entry for alerts from this sensor
+  unit: mm
+  direction: high          # sag in mm; more sag = looser track
+  bands: {normal: [null, 40], monitor: [40, 50], service_soon: [50, 60], stop: [60, null]}
+  debounce_s: 600
+transmission_temp:
+  catalogue_ref: TRN-TEMP-01     # fault catalogue entry for alerts from this sensor
+  unit: degC
+  direction: high
+  normalise: {by: [ambient_temp, engine_load_pct]}
+  trend_limit: {per_h: 0.5, window_h: 3, tier: monitor}   # slow drift (layer B), robust slope per machine-hour
+  bands: {normal: [null, 100], monitor: [100, 110], service_soon: [110, 120], stop: [120, null]}
+  debounce_s: 30
+  forecast: {model: holt, horizon_h: 72, lead_time_ref: parts_lead_time}
+brake_temp:
+  catalogue_ref: BRK-TEMP-01     # fault catalogue entry for alerts from this sensor
+  unit: degC
+  direction: high
+  bands: {normal: [null, 250], monitor: [250, 300], service_soon: [300, 350], stop: [350, null]}
+  debounce_s: 10
+tyre_pressure_loader:
+  catalogue_ref: TYR-LEAK-01     # fault catalogue entry for alerts from this sensor
+  unit: kPa
+  direction: low
+  trend_limit: {per_h: -1.5, window_h: 6, tier: monitor}   # slow drift (layer B), robust slope per machine-hour
+  bands: {stop: [null, 300], service_soon: [300, 360], monitor: [360, 400], normal: [400, null]}
+  debounce_s: 300
+  rate_limit: {per_min: -0.5, window_min: 60, tier: service_soon}           # slow leak
+  forecast: {model: holt, horizon_h: 72, lead_time_ref: parts_lead_time}
+tyre_pressure_adt:
+  catalogue_ref: TYR-LEAK-01     # fault catalogue entry for alerts from this sensor
+  unit: kPa
+  direction: low
+  trend_limit: {per_h: -1.5, window_h: 6, tier: monitor}   # slow drift (layer B), robust slope per machine-hour
+  bands: {stop: [null, 320], service_soon: [320, 380], monitor: [380, 420], normal: [420, null]}
+  debounce_s: 300
+  rate_limit: {per_min: -0.5, window_min: 60, tier: service_soon}
+  forecast: {model: holt, horizon_h: 72, lead_time_ref: parts_lead_time}
+tyre_temp:
+  catalogue_ref: TYR-LEAK-01     # fault catalogue entry for alerts from this sensor
+  unit: degC
+  direction: high
+  normalise: {by: [ambient_temp]}
+  bands: {normal: [null, 75], monitor: [75, 85], service_soon: [85, 95], stop: [95, null]}
+  debounce_s: 120
+strut_pressure:
+  unit: bar
+  direction: low
+  bands: {stop: [null, 40], service_soon: [40, 55], monitor: [55, 65], normal: [65, null]}
+  debounce_s: 300
+cell_dv:
+  catalogue_ref: BAT-CELL-01     # fault catalogue entry for alerts from this sensor
+  unit: mV
+  direction: high
+  trend_limit: {per_h: 0.4, window_h: 24, tier: monitor}   # slow drift (layer B), robust slope per machine-hour
+  bands: {normal: [null, 40], monitor: [40, 70], service_soon: [70, 120], stop: [120, null]}
+  debounce_s: 600
+  forecast: {model: holt, horizon_h: 336, lead_time_ref: parts_lead_time}
+pack_temp:
+  catalogue_ref: BAT-CELL-01     # fault catalogue entry for alerts from this sensor
+  unit: degC
+  direction: high
+  normalise: {by: [ambient_temp]}
+  bands: {normal: [null, 42], monitor: [42, 46], service_soon: [46, 52], stop: [52, null]}
+  debounce_s: 60
+  forecast: {model: holt, horizon_h: 24, lead_time_ref: parts_lead_time}
+insulation:
+  catalogue_ref: BAT-ISO-01     # fault catalogue entry for alerts from this sensor
+  unit: kohm
+  direction: low
+  bands: {stop: [null, 100], service_soon: [100, 300], monitor: [300, 500], normal: [500, null]}
+  debounce_s: 60
+
+# Layer G (§10.13): fluid sample limits per compartment
+fluid_limits:
+  engine_oil:
+    fe_ppm: {monitor: 60, service_soon: 100, stop: 150}
+    cu_ppm: {monitor: 20, service_soon: 40, stop: 80}
+    si_ppm: {monitor: 20, service_soon: 35, stop: 60}
+    na_ppm: {monitor: 40, service_soon: 80, stop: 150}
+    soot_pct: {monitor: 2.0, service_soon: 3.0, stop: 4.5}
+    viscosity_change_pct: {monitor: 10, service_soon: 20, stop: 30}
+  hydraulic_oil:
+    fe_ppm: {monitor: 25, service_soon: 45, stop: 80}
+    cu_ppm: {monitor: 15, service_soon: 30, stop: 60}
+    si_ppm: {monitor: 12, service_soon: 20, stop: 35}
+    iso_4406_max: {monitor: "18/16/13", service_soon: "20/18/15", stop: "22/20/17"}

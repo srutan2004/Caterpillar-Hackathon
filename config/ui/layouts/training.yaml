@@ -1,0 +1,9 @@
+screen: training
+device: any
+grid: {columns: 12, rows: 10, gap_token: space.3}
+modes:
+  normal: {hide: []}
+widgets:
+  - {id: header, type: ScreenHeader, area: [1, 1, 12, 1], bind: "screen:training", props: {title_key: screen.training.title}}
+  - {id: hub, type: TrainingHub, area: [1, 2, 8, 9], bind: null}
+  - {id: slots, type: SlotCalendar, area: [9, 2, 4, 9], bind: null}

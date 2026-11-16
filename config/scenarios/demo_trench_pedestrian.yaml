@@ -1,0 +1,22 @@
+id: demo_trench_pedestrian
+machine: EX-03
+operator: op_017
+site: site_metro
+task: T-2031                   # trench to design grade
+duration_s: 420
+tick_hz: 10
+baseline: {generator: excavator_trenching, skill: 0.6}
+timeline:
+  - {t: 5,   set: {seat.belt_fastened: false}}          # seatbelt demo
+  - {t: 22,  set: {seat.belt_fastened: true}}
+  - {t: 60,  inject: over_dig, params: {depth_cm: 4, duration_s: 15}}
+  - {t: 110, spawn_person: {from: [18, -6], velocity_ms: [-1.1, 0.6], ppe: {helmet: true, vest: false}}}
+  - {t: 150, inject: approach_buried_utility, params: {utility_id: U-07}}
+  - {t: 200, weather: {wind_ms: 16, gust_ms: 21}}
+  - {t: 240, inject: cavitation, params: {severity: 0.7}}
+  - {t: 300, inject: idle, params: {duration_s: 90}}    # truck late → idle
+  - {t: 380, inject: side_slope, params: {roll_deg: 12}}
+expect:                        # asserted by Phase 2 integration tests
+  alerts_in_order: [SEATBELT_UNFASTENED_ACTIVE, PERSON_TTC, UTILITY_APPROACH, WIND_GUST_HIGH_BOOM, SIDE_SLOPE]
+  advisories_in_order: [seatbelt, grade, proximity, utility, weather, cavitation, idle, stability]
+  behavior_events: [belt_off, cavitation]    # the 90 s idle is below the 180 s episode minimum; it drives the idle advisory

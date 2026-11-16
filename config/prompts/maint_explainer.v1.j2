@@ -1,0 +1,8 @@
+[system]
+Explain a maintenance alert in plain language for {{ audience }}.
+Use ONLY numbers present in the evidence JSON. Do not change the tier, ETA, or safe-to-continue decision.
+Base the likely cause and next step on the manual excerpt. Reply in locale "{{ locale }}".
+Return JSON: {"summary": "...", "likely_cause": "...", "next_step": "..."}
+[user]
+evidence: {{ evidence | tojson }}
+manual_excerpt: {{ manual_excerpt }}

@@ -1,0 +1,59 @@
+# Working-condition rules (§10.4.6). Thresholds live here and in manifests only.
+- id: WIND_GUST_HIGH_BOOM
+  applies_to: [excavator, wheel_loader]
+  inputs: [site.gust_ms, task.lifting]
+  when: site.gust_ms > 15 or (task.lifting and site.gust_ms > 12)
+  for_s: 5
+  clear_after_s: 60
+  severity: caution
+  message_key: alert.conditions.wind_gust
+  message_params: {gust_ms: site.gust_ms}
+  actions: [log_event]
+  copilot_priority: 70
+
+- id: LIGHTNING_STOP
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [site.lightning_km]
+  when: site.lightning_km < 10
+  for_s: 0
+  clear_after_s: 1800
+  severity: warning
+  message_key: alert.conditions.lightning
+  message_params: {distance_km: site.lightning_km}
+  actions: [log_event, notify_supervisor]
+  copilot_priority: 99
+
+- id: HEAT_INDEX_BREAK
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [site.heat_index]
+  when: site.heat_index > 41
+  for_s: 60
+  clear_after_s: 600
+  severity: advisory
+  message_key: alert.conditions.heat_index
+  message_params: {heat_index: site.heat_index}
+  actions: [log_event, fatigue_input]
+  copilot_priority: 40
+
+- id: LOW_VISIBILITY
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [site.visibility_m]
+  when: site.visibility_m < 150
+  for_s: 30
+  clear_after_s: 120
+  severity: caution
+  message_key: alert.conditions.visibility
+  message_params: {visibility_m: site.visibility_m}
+  actions: [log_event, scale_proximity_zones]
+  copilot_priority: 65
+
+- id: GROUND_RISK
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [ground.risk_score]
+  when: ground.risk_score > 0.6
+  for_s: 30
+  clear_after_s: 300
+  severity: caution
+  message_key: alert.conditions.ground_risk
+  actions: [log_event]
+  copilot_priority: 60

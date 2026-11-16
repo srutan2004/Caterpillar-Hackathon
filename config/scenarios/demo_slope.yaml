@@ -1,0 +1,15 @@
+id: demo_slope
+machine: EX-03
+operator: op_017
+site: site_metro
+task: T-2031
+duration_s: 120
+tick_hz: 10
+baseline: {generator: excavator_trenching, skill: 0.6}
+timeline:
+  - {t: 10, inject: side_slope, params: {roll_deg: 12, ramp_s: 8}}
+  - {t: 40, inject: extend_reach, params: {boom_deg: -10, stick_deg: -45, payload_t: 2.0}}
+  - {t: 90, inject: side_slope, params: {roll_deg: 3, ramp_s: 10}}
+expect:
+  alerts_in_order: [SIDE_SLOPE, STABILITY_MARGIN]
+  stability_limiting_axis: lateral

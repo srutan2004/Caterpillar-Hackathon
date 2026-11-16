@@ -1,0 +1,11 @@
+# ExternalFeedAdapter mapping (§7.8): organiser-provided data plugs in by mapping its columns here.
+id: example_feed
+format: csv                       # csv | parquet
+timestamp: {column: time_utc, format: iso8601}
+machine_id: {column: asset_id, map: {"EXC-0003": EX-03}}
+channels:
+  engine.coolant_temp: {column: coolant_c, unit: degC}
+  hydraulic.oil_temp: {column: hyd_temp_c, unit: degC}
+  hydraulic.pump_pressure: {column: pump_bar, unit: bar}
+  engine.rpm: {column: rpm, unit: rpm}
+  seat.belt_fastened: {column: belt, unit: bool, true_values: ["1", "Y", "true"]}

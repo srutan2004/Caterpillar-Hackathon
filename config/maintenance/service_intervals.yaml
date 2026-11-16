@@ -1,0 +1,26 @@
+# Layer F service-interval counters (§10.13-F), per manifest. Hours are engine/operating hours.
+severity_factors:            # climate/duty multipliers applied to interval consumption
+  hot_arid: 1.2
+  temperate_monsoon: 1.1
+  humid_subtropical: 1.05
+  dusty_bonus_per_100_pm10: 0.1
+excavator_20t:
+  - {item: service_250h, every_h: 250, work: [engine_oil, oil_filter, fuel_filter_primary, grease], est_h: 2.5}
+  - {item: service_500h, every_h: 500, work: [hydraulic_filter, air_filter_outer, fuel_filter_secondary], est_h: 4.0}
+  - {item: service_1000h, every_h: 1000, work: [swing_gear_oil, final_drive_oil, coolant_test], est_h: 6.0}
+  - {item: service_2000h, every_h: 2000, work: [hydraulic_oil, coolant, air_filter_inner], est_h: 9.0}
+  - {item: dpf_clean, every_h: 4500, work: [dpf_ash_clean], est_h: 5.0}
+excavator_20t_electric:
+  - {item: service_500h, every_h: 500, work: [hydraulic_filter, grease, battery_coolant_check], est_h: 3.0}
+  - {item: service_1000h, every_h: 1000, work: [swing_gear_oil, final_drive_oil, insulation_test], est_h: 5.0}
+  - {item: service_2000h, every_h: 2000, work: [hydraulic_oil, battery_coolant, cell_balance], est_h: 8.0}
+wheel_loader_m:
+  - {item: service_250h, every_h: 250, work: [engine_oil, oil_filter, grease], est_h: 2.0}
+  - {item: service_500h, every_h: 500, work: [hydraulic_filter, transmission_filter, air_filter_outer], est_h: 4.0}
+  - {item: service_1000h, every_h: 1000, work: [transmission_oil, axle_oil, brake_check], est_h: 6.0}
+  - {item: service_2000h, every_h: 2000, work: [hydraulic_oil, coolant], est_h: 8.0}
+adt_30t:
+  - {item: service_250h, every_h: 250, work: [engine_oil, oil_filter, grease], est_h: 2.0}
+  - {item: service_500h, every_h: 500, work: [transmission_filter, air_filter_outer, brake_check], est_h: 4.5}
+  - {item: service_1000h, every_h: 1000, work: [transmission_oil, axle_oil, suspension_check], est_h: 7.0}
+  - {item: service_2000h, every_h: 2000, work: [hydraulic_oil, coolant, body_pins], est_h: 9.0}

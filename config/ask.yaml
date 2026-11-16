@@ -1,0 +1,34 @@
+# Ask mode (§12.2): retrieval, tools, synthesis, grounding and confidence. Guard rules live in guardrails/.
+knowledge:
+  manuals_dir: knowledge/manuals          # approved manual sections only (tp review approve)
+  index_dir: index                        # under TP_DATA_DIR: chunk store + local vectors (offline fallback)
+  collection: terrapilot_manuals
+  chunk_max_words: 350                    # non-procedure sections split at headings, then by size
+  embedding_model_ref: llm.yaml#tasks.embeddings.model
+  fault_code_pattern: "[A-Z]{2,4}-[A-Z]{2,5}-\\d{2}"
+
+retrieval:
+  top_k: 6
+  candidates_per_retriever: 20
+  rrf_k: 60
+  min_dense_score: 0.55                   # bounded knowledge: below this the manual has no answer
+  min_bm25_hits: 1
+
+tools:                                    # what the router may call (action_tool only drafts; the UI confirms)
+  enabled: [rag, fault, sql, twin, predict, maint, plan, action]
+  sql:
+    views_ref: db/views                   # allowlisted read-only views (tp_ro)
+    max_rows: 50
+    timeout_ms: 3000
+  max_tool_calls: 4
+
+synthesis:
+  max_citations: 5
+  profiles:                               # answer length by device (cab = short, spoken)
+    cab: {max_words: 45}
+    mobile: {max_words: 150}
+    desk: {max_words: 220}
+
+confidence:                               # high/medium/low from retrieval score, tool success and grounding
+  weights: {retrieval: 0.5, tools: 0.3, grounding: 0.2}
+  bands: {high: 0.75, medium: 0.5}

@@ -1,0 +1,33 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Virtual environments
+.venv
+
+# Secrets
+.env
+apps/web/.env
+
+# Generated data, models, media, black-box clips, review queue
+data/
+media/*
+!media/.gitkeep
+
+# LLM cassettes recorded locally but not yet reviewed
+backend/tests/cassettes/_scratch/
+
+# Frontend
+node_modules/
+apps/web/dist/
+apps/web/.vite/
+
+# Notebooks
+.ipynb_checkpoints/

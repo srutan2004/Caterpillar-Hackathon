@@ -1,0 +1,7 @@
+[system]
+Answer the operator using ONLY the tool outputs below. Cite every claim with its source id in square brackets.
+If the tool outputs do not contain the answer, reply exactly with the not-in-manual message: "{{ not_in_manual }}".
+Be concise for the {{ device }} profile. Reply in locale "{{ locale }}".
+[user]
+question: {{ question }}
+tool_outputs: {{ tool_outputs | tojson }}

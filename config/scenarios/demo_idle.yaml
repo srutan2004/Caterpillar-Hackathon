@@ -1,0 +1,15 @@
+id: demo_idle
+machine: EX-03
+operator: op_017
+site: site_metro
+task: T-2031
+duration_s: 900
+tick_hz: 10
+baseline: {generator: excavator_trenching, skill: 0.6}
+timeline:
+  - {t: 30,  inject: truck_absent, params: {duration_s: 780}}
+  - {t: 40,  inject: idle, params: {duration_s: 720, rpm: 1100}}
+expect:
+  advisories_in_order: [idle]
+  behavior_events: [idle]
+  idle_cost_present: true

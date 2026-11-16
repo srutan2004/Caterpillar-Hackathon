@@ -1,0 +1,43 @@
+# Behaviour, safety and operator-state generators (§7.3, §7.4).
+idle:
+  # at each wait the operator shuts down with probability 1 − idle_propensity (§7.4)
+  tail_s: {lognormal_mu: 4.2, lognormal_sigma: 0.8}   # extra idling after the wait ends
+  high_rpm_prob: 0.12
+  high_rpm_fuel_factor: 1.8
+unsafe_patterns:                   # P(event per cycle) = sigmoid(a + b·aggression + c·time_pressure)
+  harsh_swing: {duration_s: 2, classes: [excavator], a: -6.2, b: 3.0, c: 1.5}
+  travel_boom_raised: {duration_s: 15, classes: [excavator], a: -7.5, b: 2.5, c: 1.0, per: reposition}
+  over_slope: {duration_s: 20, classes: [excavator, wheel_loader, adt], a: -8.8, b: 2.0, c: 0.8}
+  relief_stall: {duration_s: 6, classes: [excavator, wheel_loader], a: -7.0, b: 2.2, c: 1.2, soil_rock_bonus: 1.0}
+  overload: {duration_s: 10, classes: [wheel_loader, adt], a: -5.5, b: 2.4, c: 1.0}
+  cavitation: {duration_s: 5, classes: [excavator, wheel_loader], a: -7.2, b: 2.0, c: 0.5, cold_oil_bonus: 0.8}
+  rapid_reversal: {duration_s: 2, classes: [excavator], a: -6.8, b: 2.6, c: 1.4}
+detection:                          # historical detector output vs. truth labels
+  recall: {idle: 0.97, harsh_swing: 0.88, travel_boom_raised: 0.9, over_slope: 0.93, relief_stall: 0.9,
+           overload: 0.95, cavitation: 0.8, rapid_reversal: 0.8, belt_off: 0.98, high_rpm_idle: 0.95}
+  false_positive_per_shift: {harsh_swing: 0.05, cavitation: 0.08, rapid_reversal: 0.05}
+seatbelt:
+  unbelted_episodes_per_active_h: {k: 1.8}   # rate = k × (1 − belt_compliance_p)
+  episode_s: {lognormal_mu: 4.4, lognormal_sigma: 1.0}
+proximity:
+  encounters_per_h: {highway_cut: 0.3, quarry: 0.15, urban_excavation: 1.2}
+  min_distance_m: {min: 1.5, max: 25}
+  ppe_missing_prob: {helmet: 0.04, vest: 0.09}
+incidents:
+  # logit P(incident-like event per shift) = a + Σ coef·feature
+  near_miss: {a: -5.4, unsafe_rate: 1.4, low_visibility: 0.9, fatigue: 1.6, ground_risk: 1.0}
+  incident: {a: -8.2, unsafe_rate: 1.8, low_visibility: 1.1, fatigue: 1.9, ground_risk: 1.3}
+  hazard_report_per_shift: 0.03
+  severity_weights: {low: 0.6, medium: 0.3, high: 0.1}
+  root_causes: [housekeeping, communication, ground_conditions, visibility, procedure_not_followed, equipment_defect, fatigue]
+fatigue_signals:
+  perclos_base: 0.04
+  perclos_k: 0.22
+  microsleep_rate_k: 3.0          # per 5 min at fatigue 1
+  head_nod_rate_k: 4.0
+  noise_sd: 0.015
+wbv:
+  seat_transmissibility: {excavator: 0.8, wheel_loader: 1.0, adt: 1.1}
+  a_w_ms2_base: {excavator: 0.28, wheel_loader: 0.45, adt: 0.55}
+  roughness_by_soil: {clay: 1.0, sand: 0.9, rock: 1.5, gravel: 1.2, fill: 1.0}
+  speed_k: 0.02

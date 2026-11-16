@@ -1,0 +1,10 @@
+screen: maintenance
+device: any
+grid: {columns: 12, rows: 8, gap_token: space.3}
+modes:
+  normal: {hide: []}
+widgets:
+  - {id: header, type: ScreenHeader, area: [1, 1, 12, 1], bind: "screen:maintenance", props: {title_key: screen.maintenance.title}}
+  - {id: alerts, type: MaintenanceAlertCard, area: [1, 2, 6, 7], bind: "resource:maintenance_alerts"}
+  - {id: forecast, type: SensorForecastChart, area: [7, 2, 6, 4], bind: null}
+  - {id: service, type: ServiceCountdown, area: [7, 6, 6, 3], bind: null}

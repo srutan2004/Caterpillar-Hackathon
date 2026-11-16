@@ -1,0 +1,91 @@
+# Causal execution models (§7.4). These coefficients are the hidden truth the models must recover.
+excavator:
+  health_component: hydraulic_pump
+  t_cycle:
+    base_s: {trench: 36, bulk_excavation: 22, truck_loading: 20, grading: 30, backfill: 24}
+    soil_factor: {clay: 1.10, sand: 0.90, rock: 1.35, gravel: 1.00, fill: 0.95}
+    k_moist: 0.9                  # × soil moisture sensitivity × (moisture − m_field)+
+    soil_moisture_sensitivity: {clay: 1.6, sand: 0.3, rock: 0.1, gravel: 0.3, fill: 0.8}
+    k_temp: 0.012
+    t_comfort_c: 30
+    k_rain: 0.045                 # per mm/h
+    k_vis: 0.12
+    v_thresh_m: 250
+    k_skill: 0.35
+    k_fatigue: 0.25
+    k_health: 0.30                # × (1 − hydraulic pump health)
+    swing_k: 0.004                # per degree above 90
+    depth_k: 0.05                 # per m beyond depth_free_m
+    depth_free_m: 2.0
+    sigma: 0.15
+  fill_factor:
+    base: {clay: 0.95, sand: 1.05, rock: 0.75, gravel: 0.95, fill: 1.0}
+    skill_k: 0.12
+    sigma: 0.08
+  reposition: {every_cycles: 15, duration_s: 80}
+  swing_angle_deg: {trench: 60, bulk_excavation: 90, truck_loading: 100, grading: 30, backfill: 70}
+  phase_split: {dig: 0.35, swing_loaded: 0.22, dump: 0.13, swing_empty: 0.30}
+  load_state_share: {dig: 0.35, swing: 0.52, lift: 0.13}
+wheel_loader:
+  health_component: hydraulic_pump
+  t_cycle:
+    base_s: {load_and_carry: 34, stockpile: 28, truck_loading: 30}
+    carry_speed_kph: {loaded: 11, empty: 14}
+    soil_factor: {clay: 1.08, sand: 0.95, rock: 1.25, gravel: 1.0, fill: 0.97}
+    k_moist: 0.8
+    soil_moisture_sensitivity: {clay: 1.6, sand: 0.3, rock: 0.1, gravel: 0.3, fill: 0.8}
+    k_temp: 0.010
+    t_comfort_c: 30
+    k_rain: 0.05
+    k_vis: 0.15
+    v_thresh_m: 250
+    k_skill: 0.30
+    k_fatigue: 0.22
+    k_health: 0.25
+    sigma: 0.14
+  fill_factor:
+    base: {clay: 0.95, sand: 1.0, rock: 0.8, gravel: 0.95, fill: 1.0}
+    skill_k: 0.10
+    sigma: 0.08
+adt:
+  health_component: transmission
+  load_time_s: {mean: 210, sd: 45}
+  dump_time_s: 70
+  speed_kph: {empty: 32, loaded: 24}
+  grade_speed_k: 0.06             # fractional speed loss per % grade (loaded, uphill)
+  road_moisture_k: 1.2            # speed loss × (moisture − m_field)+ on clay/fill roads
+  road_soil_sensitivity: {clay: 1.5, sand: 0.4, rock: 0.1, gravel: 0.3, fill: 0.9}
+  k_rain: 0.04
+  k_vis: 0.20
+  v_thresh_m: 300
+  k_skill: 0.15
+  k_fatigue: 0.15
+  k_health: 0.20
+  sigma: 0.10
+  payload_t: {mean_fraction_of_rated: 0.92, sd: 0.06}
+material_density_t_m3: {clay: 1.85, sand: 1.70, rock: 2.40, gravel: 1.95, fill: 1.75}
+waits:
+  truck:
+    applies_to_types: [truck_loading, bulk_excavation]
+    truck_payload_t: 28
+    prob_wait_after_truck: {base: 0.25, per_missing_truck: 0.12}
+    wait_s: {lognormal_mu: 4.9, lognormal_sigma: 0.6}     # median ≈ 134 s
+  radio_call: {per_hour: 0.4, wait_s: {min: 60, max: 240}}
+  changeover_min: {min: 10, max: 25}
+stoppages:
+  hard_stop: {lightning_km_lt: 10, gust_ms_gt: 20, rain_mm_h_gt: 12}
+  resume_after_clear_min: 30
+fatigue:
+  hours_exponent: 1.3
+  heat_k: 0.08                    # per °C heat index above heat_ref
+  heat_ref_c: 32
+  night_bonus: 0.15
+fuel:
+  mode_share: {eco: 0.25, standard: 0.6, high: 0.15}
+  load_factor_working: 0.95
+electric:
+  charge_at_breaks_min_break: 15
+  overnight_target_soc: 0.95
+  low_soc_start_prob: 0.12        # charger unavailable overnight → natural start-time variation
+  low_soc_start_range: [0.30, 0.50]
+  mid_task_charge_min: {min: 25, max: 45}

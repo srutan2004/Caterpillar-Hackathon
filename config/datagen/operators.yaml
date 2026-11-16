@@ -1,0 +1,24 @@
+# People and latent traits (§7.3). Traits are hidden truth (truth_operator_traits), never model inputs.
+traits:
+  skill: {from_experience: {a: -1.2, b: 1.1}, noise_sd: 0.35}   # skill = sigmoid(a + b*log1p(exp_years) + noise)
+  idle_propensity: {beta: [2.0, 5.0]}
+  belt_compliance_p: {beta: [12.0, 1.4]}
+  aggression: {beta: [2.0, 6.0]}
+  fatigue_susceptibility: {beta: [3.0, 4.0]}
+certified_classes_per_operator: {min: 1, max: 2}
+names:
+  given: [Aarav, Vivaan, Aditya, Arjun, Sai, Reyansh, Ishaan, Kabir, Rohan, Vikram, Anil, Suresh, Ramesh,
+          Priya, Ananya, Diya, Kavya, Meera, Neha, Pooja, Sunita, Lakshmi, Farhan, Imran, Joseph, Thomas,
+          Gurpreet, Harpreet, Manoj, Deepak, Rajesh, Sanjay, Mohan, Kiran, Asha, Rekha, Nitin, Ravi, Arun, Sneha]
+  family: [Sharma, Verma, Patel, Singh, Kumar, Das, Iyer, Nair, Reddy, Rao, Gupta, Mehta, Joshi, Khan,
+           Fernandes, Banerjee, Chatterjee, Mukherjee, Pillai, Menon, Yadav, Chauhan, Bhat, Kulkarni]
+auth:
+  # Demo-only PIN for every generated user. Hashed with PBKDF2 before it reaches the database.
+  demo_pin: "1234"
+id_formats:
+  operator: "op_{n:03d}"
+  instructor: "ins_{n:02d}"
+  supervisor: "sup_{site}"
+  technician: "tech_{n:02d}"
+  admin: "admin_{n:02d}"
+locale_default: en

@@ -1,0 +1,57 @@
+# Live Situational Copilot (§12.1). Generators are deterministic functions of the fused MachineState; the arbiter
+# picks one advisory; the narrator (Groq `live_narration`) may rephrase it, validated against the facts.
+tick_hz: 2                      # arbiter cadence (edge ticks are faster; the copilot samples)
+max_words: 14
+severity_weight: {advisory: 1.0, caution: 1.6, warning: 2.2}
+novelty:
+  window_s: 90                  # a repeat of the same key inside the window is worth less
+  repeat_decay: 0.5
+hysteresis:
+  switch_margin: 1.15           # a new candidate must beat the shown one by this factor
+dwell_s: 4                      # minimum time an advisory stays up
+precision_mode:                 # workload-adaptive: while cutting grade only these categories may speak
+  when: "grade.active"
+  categories: [grade, stability, proximity, utility]
+
+categories:
+  proximity:   {base_priority: 90, cooldown_s: 8,  ttl_s: 6,  template: proximity}
+  utility:     {base_priority: 85, cooldown_s: 10, ttl_s: 8,  template: utility}
+  stability:   {base_priority: 80, cooldown_s: 10, ttl_s: 8,  template: stability}
+  fatigue:     {base_priority: 70, cooldown_s: 600, ttl_s: 15, template: fatigue}
+  grade:       {base_priority: 60, cooldown_s: 4,  ttl_s: 5,  template: grade}
+  cavitation:  {base_priority: 55, cooldown_s: 20, ttl_s: 8,  template: cavitation}
+  weather:     {base_priority: 50, cooldown_s: 60, ttl_s: 10, template: weather}
+  hydraulic_temp: {base_priority: 50, cooldown_s: 120, ttl_s: 10, template: hydraulic_temp}
+  maintenance: {base_priority: 45, cooldown_s: 300, ttl_s: 12, template: maintenance}
+  energy:      {base_priority: 45, cooldown_s: 300, ttl_s: 12, template: energy}
+  payload:     {base_priority: 40, cooldown_s: 30, ttl_s: 8,  template: payload}
+  idle:        {base_priority: 35, cooldown_s: 120, ttl_s: 12, template: idle}
+  pacing:      {base_priority: 30, cooldown_s: 600, ttl_s: 12, template: pacing}
+  plan:        {base_priority: 30, cooldown_s: 900, ttl_s: 15, template: plan}
+  power_mode:  {base_priority: 25, cooldown_s: 300, ttl_s: 10, template: power_mode}
+
+# Generator thresholds. Manifest values are referenced (manifest.<path>), never repeated.
+generators:
+  grade: {min_deviation_cm: 3}
+  proximity: {max_ttc_s: 12, zone_ref: manifest.proximity.zones_m.advisory}
+  utility: {clearance_multiple: 2.0}
+  stability: {margin_ref: manifest.envelopes.stability_margin.advisory}
+  weather: {gust_advisory_ms: 12}   # below the WIND_GUST_HIGH_BOOM caution rule, as early advice
+  cavitation: {ripple_bar: 12, min_load_pct: 60}
+  hydraulic_temp: {limits_ref: maintenance/sensor_limits.yaml#hyd_oil_temp, tier: monitor}
+  payload: {rated_ref: manifest.specs.rated_payload_t, under_fraction: 0.75, phase: dump}
+  idle: {min_idle_s: 120}
+  pacing: {behind_pct: 5}
+  fatigue: {score_advisory: 0.6}
+  energy: {margin_warn: 0.05}
+  power_mode: {load_bands: {eco: [0, 45], standard: [45, 80], high: [80, 101]}, dwell_s: 60}
+
+validator:
+  number_tolerance: 0.051        # |number − fact| allowed after unit rounding
+  banned_phrases: [override, disable, ignore the alarm, ignore the alert, bypass, turn off the, silence the, dollar, "$", blade]
+  direction_words: {raise: [raise, up], lower: [lower, down], on_grade: [on grade, hold]}
+
+narrator:
+  enabled: true
+  workers: 2                     # background threads; the edge tick never waits for the LLM
+tts: {enabled: true, rate: 1.0, chime_by_tier: {advisory: soft, caution: double, warning: urgent}}

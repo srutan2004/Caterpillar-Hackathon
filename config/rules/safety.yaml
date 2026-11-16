@@ -1,0 +1,169 @@
+# Deterministic safety rules (§6.2, §10.4). Conditions are simpleeval expressions over state
+# paths; `manifest.<path>` and `app.<path>` resolve against config. Evaluated by the Phase 2 engine.
+- id: SEATBELT_UNFASTENED_ACTIVE
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [seat.occupied, seat.belt_fastened, motion.ground_speed_kph, hydraulic.pump_pressure]
+  when: >
+    seat.occupied and not seat.belt_fastened and
+    (motion.ground_speed_kph > manifest.motion.moving_threshold_kph or
+     hydraulic.pump_pressure > manifest.motion.hydraulic_active_pressure_bar)
+  for_s: manifest.seatbelt.grace_s
+  clear_after_s: 2
+  severity: caution
+  escalate: {to: warning, after_s: manifest.seatbelt.escalate_after_s}
+  message_key: alert.seatbelt.unfastened          # i18n, with {placeholders}
+  actions: [log_event, compliance_tick, notify_supervisor_on_escalate, blackbox_mark]
+  copilot_priority: 95
+
+- id: PERSON_IN_ZONE_CAUTION
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [proximity.nearest_person_m]
+  when: proximity.nearest_person_m < manifest.proximity.zones_m.caution
+  for_s: 0
+  clear_after_s: 2
+  severity: caution
+  message_key: alert.proximity.person_zone
+  message_params: {distance_m: proximity.nearest_person_m, zone: "'caution'"}
+  actions: [log_event, blackbox_mark]
+  copilot_priority: 90
+
+- id: PERSON_IN_ZONE_WARNING
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [proximity.nearest_person_m]
+  when: proximity.nearest_person_m < manifest.proximity.zones_m.warning
+  for_s: 0
+  clear_after_s: 2
+  severity: warning
+  message_key: alert.proximity.person_zone
+  message_params: {distance_m: proximity.nearest_person_m, zone: "'warning'"}
+  actions: [log_event, blackbox_trigger, notify_supervisor]
+  copilot_priority: 100
+
+- id: PERSON_TTC
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [proximity.min_ttc_s]
+  when: proximity.min_ttc_s < manifest.proximity.ttc_s.caution
+  for_s: 0
+  clear_after_s: 2
+  severity: caution
+  escalate: {to: warning, when: "proximity.min_ttc_s < manifest.proximity.ttc_s.warning"}
+  message_key: alert.proximity.person_ttc
+  message_params: {ttc_s: proximity.min_ttc_s}
+  actions: [log_event, blackbox_mark]
+  copilot_priority: 98
+
+- id: UTILITY_APPROACH
+  applies_to: [excavator]
+  inputs: [geofence.utility_distance_m]
+  when: geofence.utility_distance_m < geofence.utility_clearance_m * 2
+  for_s: 0
+  clear_after_s: 3
+  severity: advisory
+  escalate: {to: caution, when: "geofence.utility_distance_m < geofence.utility_clearance_m"}
+  message_key: alert.utility.approach
+  message_params: {utility_id: geofence.utility_id, distance_m: geofence.utility_distance_m}
+  actions: [log_event, blackbox_mark]
+  copilot_priority: 92
+
+- id: OVERHEAD_LINE_APPROACH
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [geofence.overhead_distance_m]
+  when: geofence.overhead_distance_m < geofence.overhead_clearance_m * 1.5
+  for_s: 0
+  clear_after_s: 3
+  severity: caution
+  escalate: {to: warning, when: "geofence.overhead_distance_m < geofence.overhead_clearance_m"}
+  message_key: alert.overhead.approach
+  message_params: {line_id: geofence.overhead_id, distance_m: geofence.overhead_distance_m}
+  actions: [log_event, blackbox_mark]
+  copilot_priority: 96
+
+- id: STABILITY_MARGIN
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [stability.margin]
+  when: stability.margin < manifest.envelopes.stability_margin.caution
+  for_s: 0.5
+  clear_after_s: 2
+  severity: caution
+  escalate: {to: warning, when: "stability.margin < manifest.envelopes.stability_margin.warning"}
+  message_key: alert.stability.margin_low
+  message_params: {margin: stability.margin}
+  actions: [log_event, blackbox_mark]
+  copilot_priority: 97
+
+- id: SIDE_SLOPE
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [imu.roll_deg]
+  when: abs(imu.roll_deg) > manifest.envelopes.side_slope_deg.caution
+  for_s: 2
+  clear_after_s: 3
+  severity: caution
+  escalate: {to: warning, when: "abs(imu.roll_deg) > manifest.envelopes.side_slope_deg.warning"}
+  message_key: alert.slope.side_slope
+  message_params: {roll_deg: imu.roll_deg}
+  actions: [log_event, blackbox_mark]
+  copilot_priority: 88
+
+- id: SOC_FLOOR_PROJECTION
+  applies_to: [excavator]
+  powertrain: [electric]
+  inputs: [energy.projected_min_soc]
+  when: energy.projected_min_soc < app.energy.soc_floor
+  for_s: 10
+  clear_after_s: 30
+  severity: warning
+  message_key: alert.energy.soc_floor
+  message_params: {floor_pct: app.energy.soc_floor * 100}
+  actions: [log_event]
+  copilot_priority: 80
+
+- id: P2P_CLOSING
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [p2p.tier, p2p.nearest_gap_m, p2p.nearest_id]
+  when: p2p.tier == "caution" or p2p.tier == "warning"
+  for_s: 1
+  clear_after_s: 4
+  severity: caution
+  escalate: {to: warning, when: 'p2p.tier == "warning"'}
+  message_key: alert.p2p.closing
+  message_params: {machine_id: p2p.nearest_id, gap_m: p2p.nearest_gap_m}
+  actions: [log_event, blackbox_mark]
+  copilot_priority: 92
+
+- id: P2P_BLIND_SPOT
+  applies_to: [wheel_loader, adt]
+  inputs: [p2p.blind_spot, p2p.nearest_gap_m, p2p.nearest_id]
+  when: p2p.blind_spot and p2p.nearest_gap_m < app.p2p.zones_m.caution
+  for_s: 1
+  clear_after_s: 4
+  severity: warning
+  message_key: alert.p2p.blind_spot
+  message_params: {machine_id: p2p.nearest_id, gap_m: p2p.nearest_gap_m}
+  actions: [log_event, blackbox_trigger]
+  copilot_priority: 95
+
+- id: FATIGUE_HIGH
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [fatigue.score, fatigue.break_min]
+  when: fatigue.score >= app.fatigue.tiers.caution
+  for_s: 30
+  clear_after_s: 300
+  severity: caution
+  escalate: {to: warning, when: "fatigue.score >= app.fatigue.tiers.warning"}
+  message_key: alert.fatigue.high
+  message_params: {break_min: fatigue.break_min}
+  actions: [log_event, escalate_supervisor]
+  copilot_priority: 76
+
+- id: WBV_EXPOSURE
+  applies_to: [excavator, wheel_loader, adt]
+  inputs: [wbv.a8_ms2, wbv.projected_a8_ms2]
+  when: wbv.a8_ms2 >= app.wbv.action_value_ms2
+  for_s: 60
+  clear_after_s: 600
+  severity: caution
+  escalate: {to: warning, when: "wbv.a8_ms2 >= app.wbv.limit_value_ms2"}
+  message_key: alert.wbv.exposure
+  message_params: {a8: wbv.a8_ms2}
+  actions: [log_event]
+  copilot_priority: 60

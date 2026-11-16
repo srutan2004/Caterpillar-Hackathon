@@ -1,0 +1,14 @@
+id: loader_std
+pattern: single_lever
+selectable_patterns: [single_lever]
+axes:
+  single_lever:
+    right_x: bucket
+    right_y: lift_arm
+    steering: articulation
+keyboard:
+  lift_arm: {neg: ArrowUp, pos: ArrowDown}
+  bucket: {neg: ArrowLeft, pos: ArrowRight}
+  steer: {neg: KeyA, pos: KeyD}
+  throttle: {neg: KeyS, pos: KeyW}
+deadband: 0.05

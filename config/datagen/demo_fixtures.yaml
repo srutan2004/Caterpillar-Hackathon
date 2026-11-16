@@ -1,0 +1,26 @@
+# Pinned facts that make the demo (§18) and scenarios (§7.6) line up with the generated history.
+# Everything else is generated; these only pin ids, sites, and a few starting states.
+machine_sites:
+  EX-03: site_metro
+  EXE-01: site_metro
+operators:
+  op_017: {site: site_metro, classes: [excavator], traits: {skill: 0.6, belt_compliance_p: 0.82, idle_propensity: 0.45, aggression: 0.35},
+           cert_expiring: {module: trenching_101, days: 5}}
+  op_021: {site: site_metro, classes: [excavator], traits: {skill: 0.7, belt_compliance_p: 0.95, idle_propensity: 0.2, aggression: 0.2}}
+today_tasks:
+  - {id: T-2031, machine: EX-03, operator: op_017, site: site_metro, type: trench, quantity: 180, depth_m: 2.5,
+     planned_start_local: "07:30", deadline_local: "16:00", priority: 2, design_ref: DS-metro-grid-C}
+  - {id: T-2044, machine: null, operator: null, site: site_metro, type: bulk_excavation, quantity: 300, depth_m: 3.0,
+     planned_start_local: "12:30", deadline_local: "17:30", priority: 3, design_ref: DS-metro-grid-D}
+  - {id: T-2045, machine: EXE-01, operator: op_021, site: site_metro, type: trench, quantity: 160, depth_m: 2.2,
+     planned_start_local: "07:45", deadline_local: "16:00", priority: 2, design_ref: DS-metro-grid-C}
+weather_overrides:
+  - {site: site_metro, day_offset: -1, hours_local: [17, 18, 19, 20, 21, 22, 23], set: {rain_mm: 9.0, rh: 95}}
+  - {site: site_metro, day_offset: 0, hours_local: [0, 1, 2, 3, 4, 5], set: {rain_mm: 2.0, rh: 92}}
+  - {site: site_metro, day_offset: 0, hours_local: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], set: {rain_mm: 0.0, lightning_km: 100}}
+machine_states_now:
+  EXE-01: {soc: 0.38, walkaround_issue: null}
+active_fault_modes:
+  - {machine: EXE-01, mode: filter_plugging, onset_h_ago: 30, time_to_failure_h: 70}
+service_due:
+  EX-03: {item: service_250h, due_in_h: 14}

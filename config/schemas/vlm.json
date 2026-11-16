@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "vlm_troubleshoot",
+  "type": "object",
+  "properties": {
+    "label": {"type": "string"},
+    "component": {"type": "string"},
+    "visible_evidence": {"type": "string"}
+  },
+  "required": ["label", "component", "visible_evidence"],
+  "additionalProperties": false
+}

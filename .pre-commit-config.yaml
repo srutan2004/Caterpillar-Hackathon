@@ -1,0 +1,34 @@
+# Install once: uv run pre-commit install
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy (strict on domain/safety/twin)
+        entry: uv run mypy
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: validate-config
+        name: tp validate-config
+        entry: uv run tp validate-config --no-warnings
+        language: system
+        files: ^(config/|backend/terrapilot/core/)
+        pass_filenames: false
+      - id: check-hardcoding
+        name: check_hardcoding.py
+        entry: uv run python scripts/check_hardcoding.py
+        language: system
+        files: ^apps/web/src/
+        pass_filenames: false
+      - id: eslint
+        name: eslint (hardcoding rules)
+        entry: npm --prefix apps/web run lint
+        language: system
+        files: ^apps/web/src/
+        pass_filenames: false

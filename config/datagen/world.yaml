@@ -1,0 +1,64 @@
+# Synthetic world (§7.2). History is anchored to the run date (now - history_days); nothing is dated in code.
+seed: 42
+history_days: 180
+future_days: 3                  # truth weather/ground beyond "now" for forecasts and the start-time oracle
+timezone: Asia/Kolkata
+shift:
+  start_local: "07:00"
+  length_h: 10
+  breaks: [{at_h: 2.5, minutes: 15}, {at_h: 5.0, minutes: 60}, {at_h: 7.5, minutes: 15}]
+  workdays: [0, 1, 2, 3, 4, 5]    # Mon..Sat
+  overtime_max_h: 2.0
+sites:
+  - {id: site_north, name: North highway cut, type: highway_cut, climate: hot_arid, altitude_m: 450,
+     lat: 26.92, lon: 75.79, soil_mix: {clay: .2, sand: .5, rock: .3}, truck_count: 4,
+     zones: {dig: 3, haul: 2, dump: 1, exclusion: 1, pedestrian: 1}, extent_m: 900}
+  - {id: site_quarry, name: Hill quarry, type: quarry, climate: temperate_monsoon, altitude_m: 900,
+     lat: 18.75, lon: 73.41, soil_mix: {rock: .7, gravel: .3}, truck_count: 5,
+     zones: {dig: 3, haul: 2, dump: 2, exclusion: 1, pedestrian: 1}, extent_m: 700}
+  - {id: site_metro, name: Metro station excavation, type: urban_excavation, climate: humid_subtropical, altitude_m: 20,
+     lat: 22.57, lon: 88.36, soil_mix: {clay: .6, fill: .4}, truck_count: 3,
+     zones: {dig: 4, haul: 1, dump: 1, exclusion: 2, pedestrian: 2}, extent_m: 350,
+     buried_utilities: 18, overhead_lines: 3, charging_stations: [{id: C1, kind: dc_fast}, {id: C2, kind: ac_site}]}
+fleet:
+  - {manifest: excavator_20t, count: 6, sites: {site_north: 2, site_quarry: 2, site_metro: 2}}
+  - {manifest: wheel_loader_m, count: 3, sites: {site_north: 1, site_quarry: 2}}
+  - {manifest: adt_30t, count: 4, sites: {site_north: 2, site_quarry: 2}}
+  - {manifest: excavator_20t_electric, count: 1, sites: {site_metro: 1}}
+machine_hours_initial: {min: 1500, max: 9000}
+operators: {count: 40, experience_years: {dist: lognormal, mu: 1.6, sigma: 0.6}}
+instructors: {count: 4}
+supervisors: {per_site: 1}
+technicians: {count: 6, experience_years: {dist: lognormal, mu: 1.9, sigma: 0.5}}
+admins: {count: 1}
+geo:
+  utility_depth_m: {min: 0.8, max: 3.0}
+  utility_depth_uncertainty_m: {surveyed: 0.1, as_built: 0.3, estimated: 0.75}
+  utility_source_mix: {surveyed: 0.4, as_built: 0.4, estimated: 0.2}
+  utility_clearance_m: {min: 1.0, max: 2.0}
+  overhead_clearance_m: {min: 4.0, max: 7.0}
+  overhead_height_m: {min: 9.0, max: 14.0}
+  design_surface_cell_m: 5.0
+# Output volume controls (per table resolution).
+resolution:
+  sensor_step_min: 5
+  telemetry_1min_days: 14
+  battery_step_min: 5
+  fatigue_step_min: 5
+  forecast: {issue_local: "05:00", horizon_h: 48, history_issues_days: 60}
+scales:
+  tiny:
+    history_days: 28
+    fleet_counts: {excavator_20t: 3, wheel_loader_m: 1, adt_30t: 2, excavator_20t_electric: 1}
+    fleet_sites: {excavator_20t: {site_metro: 3}, wheel_loader_m: {site_north: 1}, adt_30t: {site_north: 2}}
+    operators: 22           # demo fixtures pin op_017 and op_021
+    instructors: 2
+    technicians: 3
+    resolution: {sensor_step_min: 15, telemetry_1min_days: 2, battery_step_min: 15, fatigue_step_min: 15,
+                 forecast: {issue_local: "05:00", horizon_h: 48, history_issues_days: 7}}
+  small:
+    history_days: 60
+    operators: 30
+    resolution: {sensor_step_min: 10, telemetry_1min_days: 3, battery_step_min: 10, fatigue_step_min: 10,
+                 forecast: {issue_local: "05:00", horizon_h: 48, history_issues_days: 20}}
+  full: {}

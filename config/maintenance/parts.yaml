@@ -1,0 +1,23 @@
+# Parts catalogue (§7.7). Prices in app.costs.currency; lead_time_days drives layer C lead-time awareness.
+- {part_no: HP-2200-KIT, component_kind: hydraulic_pump, description: Hydraulic pump reseal and rotating group kit, price: 185000, lead_time_days: 6, stock: 1}
+- {part_no: HF-1100, component_kind: hydraulic_pump, description: Hydraulic return filter element, price: 4200, lead_time_days: 1, stock: 24}
+- {part_no: RS-400, component_kind: cooling, description: Radiator debris screen, price: 7800, lead_time_days: 2, stock: 4}
+- {part_no: TH-082, component_kind: cooling, description: Thermostat 82 °C, price: 2600, lead_time_days: 2, stock: 6}
+- {part_no: WP-310, component_kind: cooling, description: Engine water pump, price: 24500, lead_time_days: 4, stock: 2}
+- {part_no: OP-120, component_kind: engine, description: Engine oil pump, price: 38000, lead_time_days: 5, stock: 1}
+- {part_no: OF-050, component_kind: engine, description: Engine oil filter, price: 1400, lead_time_days: 1, stock: 40}
+- {part_no: AF-OUT-70, component_kind: engine, description: Air filter outer element, price: 3900, lead_time_days: 1, stock: 18}
+- {part_no: AF-IN-70, component_kind: engine, description: Air filter inner element, price: 2700, lead_time_days: 1, stock: 12}
+- {part_no: FF-PRI-20, component_kind: engine, description: Primary fuel filter / water separator, price: 2100, lead_time_days: 1, stock: 20}
+- {part_no: ALT-24V-80A, component_kind: electrical, description: Alternator 24 V 80 A, price: 42000, lead_time_days: 4, stock: 1}
+- {part_no: SG-OIL-20, component_kind: swing_drive, description: Swing gear oil 20 L, price: 6400, lead_time_days: 1, stock: 10}
+- {part_no: SB-KIT-01, component_kind: swing_drive, description: Swing bearing seal kit, price: 56000, lead_time_days: 8, stock: 0}
+- {part_no: TA-SEAL-01, component_kind: undercarriage, description: Track adjuster seal kit, price: 5200, lead_time_days: 3, stock: 3}
+- {part_no: TT-SET-5, component_kind: get, description: Bucket tooth set (5), price: 38000, lead_time_days: 2, stock: 6}
+- {part_no: CE-2400, component_kind: get, description: Cutting edge 2.4 m, price: 29000, lead_time_days: 5, stock: 1}
+- {part_no: TV-STEM-01, component_kind: tyres, description: OTR tyre valve stem, price: 900, lead_time_days: 1, stock: 30}
+- {part_no: TYRE-23.5R25, component_kind: tyres, description: OTR tyre 23.5R25, price: 265000, lead_time_days: 10, stock: 2}
+- {part_no: TF-300, component_kind: transmission, description: Transmission filter, price: 5600, lead_time_days: 2, stock: 8}
+- {part_no: BP-KIT-01, component_kind: brakes, description: Brake pack kit, price: 72000, lead_time_days: 7, stock: 1}
+- {part_no: BM-MOD-48, component_kind: battery, description: Battery module 48 V, price: 310000, lead_time_days: 14, stock: 0}
+- {part_no: HV-CABLE-01, component_kind: electrical, description: HV cable assembly, price: 48000, lead_time_days: 9, stock: 0}

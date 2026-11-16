@@ -1,0 +1,14 @@
+screen: fleet
+device: any
+grid: {columns: 12, rows: 12, gap_token: space.3}
+modes:
+  normal: {hide: []}
+widgets:
+  - {id: header, type: ScreenHeader, area: [1, 1, 12, 1], bind: "screen:fleet", props: {title_key: screen.fleet.title}}
+  - {id: machines, type: MachineList, area: [1, 2, 6, 5], bind: "resource:machines", props: {columns: [id, model, status, powertrain, hour_meter]}}
+  - {id: alerts, type: MaintenanceAlertCard, area: [7, 2, 6, 5], bind: "resource:maintenance_alerts"}
+  - {id: health, type: HealthList, area: [1, 7, 4, 3], bind: null}
+  - {id: availability, type: AvailabilityChart, area: [5, 7, 4, 3], bind: null}
+  - {id: charge, type: Gantt, area: [9, 7, 4, 6], bind: null}
+  - {id: idle, type: KpiTile, area: [1, 10, 4, 3], bind: "resource:idle_summary.cost", props: {kind: money, label_key: widget.kpi_tile.idle_cost}}
+  - {id: anomalies, type: AnomalyBoard, area: [5, 10, 4, 3], bind: "resource:anomalies"}

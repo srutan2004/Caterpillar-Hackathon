@@ -1,0 +1,199 @@
+# Model registry (§11). Training arrives in Phase 2/3; the learnability gate (Phase 1) uses `learnability`.
+models:
+  task_duration:
+    type: lightgbm_quantile_cqr
+    priority: P0
+    target: duration_min
+    target_transform: log_per_unit      # model log(minutes per unit); quantity enters as a feature too
+    quantiles: [0.1, 0.5, 0.9]
+    interval_alpha: 0.2                 # 80% conformalised interval (CQR)
+    split: {calibration_fraction: 0.2, test_fraction: 0.2}   # time-ordered: train → calibrate → test
+    categorical: [task_type, machine_class, powertrain, soil, site_id]
+    features: [task_type, log_quantity, depth_m, haul_km, grade_pct, machine_class, bucket_capacity_m3, powertrain,
+               health_index, experience_years, operator_prior, temp_c, temp_excess_c, rain_mm_h, gust_ms,
+               visibility_low, soil, moisture, moisture_excess, slope_fos, start_hour, day_of_week,
+               break_overlap_min, stop_weather_hours, site_id]
+    params: {n_estimators: 500, learning_rate: 0.04, num_leaves: 31, min_child_samples: 15, subsample: 0.85,
+             subsample_freq: 1, colsample_bytree: 0.9, verbose: -1}
+    operator_prior: {shrinkage_k: 5}    # prior tasks needed before an operator's own ratio dominates
+    covariates:
+      soil_properties_ref: datagen/ground.yaml#soils        # field capacity etc. are known soil properties
+      hard_stop_ref: datagen/cycles.yaml#stoppages.hard_stop
+      visibility_low_m: 250
+      heat_comfort_c: 30
+    factors:
+      top_n: 2
+      min_abs_min: 1.0
+      # what the task *is* (size, type, machine) is not a "why"; factors explain conditions, people and machine state
+      exclude: [task_type, log_quantity, haul_km, grade_pct, machine_class, bucket_capacity_m3, powertrain, site_id]
+    baseline:                            # physics estimate shown for comparison (§10.6)
+      cycle_s_ref: datagen/cycles.yaml
+      fill_factor: 0.9
+      efficiency: 0.75
+    artefact_dir: models/task_duration
+    targets: {mape_max: 0.18, picp_target: 0.80, picp_tolerance: 0.05}
+  live_etc:
+    type: bayesian_blend
+    priority: P0
+    prior_strength_k: 12              # cycles of evidence the model prior is worth
+    z_interval: 1.2816                # 80% band (matches task_duration.interval_alpha)
+    plan_prior_log_half_width: 0.35   # used when no model estimate was handed to the edge
+    min_cycles_for_cv: 3
+  idle_detector: {type: rule_state_machine, priority: P0, targets: {f1_min: 0.9}}
+  cycle_anomaly:
+    type: isolation_forest_robust_z   # thresholds/contamination: rules/behavior.yaml (statistical, ml)
+    priority: P0
+    seed: 7
+    eval_top_k: 500                   # precision@k vs truth (labelled episode or active fault mode)
+    artefact_dir: models/cycle_anomaly
+    targets: {precision_at_k_min: 0.6}
+  fatigue_score: {type: logistic, priority: P1, targets: {auroc_min: 0.8}}
+  component_rul: {type: lightgbm_quantile, priority: P1, targets: {picp_target: 0.8}}
+  risk_index:
+    type: cox_ph                      # empirical hazard until enough failures per component are observed
+    priority: P1
+    horizon_h: 168
+    bands: {high: 0.2, medium: 0.05}
+    targets: {c_index_min: 0.7}
+  component_health:
+    type: weighted_fusion             # 1.0 minus the worst open evidence tier for that component
+    priority: P1
+    tier_deduction: {monitor: 0.08, service_soon: 0.25, stop: 0.6}
+  sensor_baseline:
+    type: per_sensor_regression       # Huber regression per (manifest, sensor) → duty-normalised residuals
+    priority: P0
+    covariate_signals: {ambient_temp: site.temp_c, engine_load_pct: engine.load_pct, engine_rpm: engine.rpm, dust_pm10: site.pm10}
+    max_rows_per_sensor: 60000
+    artefact_dir: models/sensor_baseline
+    targets: {residual_rmse_ratio_max: 0.9}   # residual RMSE / raw SD — the covariates must explain something
+  sensor_forecaster:
+    type: holt_ets
+    priority: P0
+    alpha: 0.15                       # level smoothing (per sample)
+    beta: 0.05                        # trend smoothing (per sample)
+    trend_half_life_h: 24             # memory of the trend-uncertainty fit, in machine hours
+    lookback_h: 48                    # operating samples used for the fit
+    min_points: 12
+    min_span_h: 3                     # a forecast needs at least this much evidence
+    min_trend_z: 2.0                  # trend must be this many standard errors from zero to forecast a crossing
+    eta_quantiles: [0.1, 0.5, 0.9]
+    targets: {eta_picp_target: 0.8}
+  maint_alert_fusion:
+    type: rules_signatures_peer
+    priority: P0
+    scan_lookback_h: 72               # history window evaluated by `tp maint scan`
+    operating_filter: {sensor: engine.rpm, min: 900}   # limit/trend layers only use samples while working
+    min_points_trend: 6
+    live:                             # streaming monitor used during scenarios (machine time = sim time × time_scale)
+      sample_every_machine_s: 60
+      evaluate_every_machine_s: 300
+      aggregate_window_sim_s: 30        # each sample is the mean over ≈ one work cycle, like the 1-min history rows
+    min_window_coverage: 0.5          # a trend/forecast window must be at least this full before it can fire
+    service_interval_tier: {due_within_h: 50, overdue_tier: service_soon, due_tier: monitor}
+    fault_code_active_h: 24           # fault events newer than this count as active evidence (layer H)
+    peer:                             # layer E: fleet-peer drift on duty-normalised residuals
+      robust_z: 3.0
+      min_peers: 3
+      tier: monitor
+      window_h: 12
+    fluid:                            # layer G
+      max_sample_age_days: 45
+    fluid_components: {engine_oil: engine, hydraulic_oil: hydraulic_pump}
+    targets: {detection_rate_min: 0.85, false_alarms_per_100h_max: 0.5}
+  repair_estimate:
+    type: lightgbm_quantile_cqr
+    priority: P1
+    quantiles: [0.1, 0.5, 0.9]
+    interval_alpha: 0.2
+    min_rows: 60                      # below this the catalogue base hours are used instead
+    features: [component, work_type, machine_class, machine_hours, parts_in_stock, site_remoteness_h, technician_jobs]
+    categorical: [component, work_type, machine_class]
+    params: {n_estimators: 300, learning_rate: 0.05, num_leaves: 15, min_child_samples: 20, verbose: -1}
+    artefact_dir: models/repair_estimate
+    targets: {mape_max: 0.3, picp_target: 0.8}
+  energy_per_task: {type: cycle_energy_quantile, priority: P0, targets: {mape_max: 0.15, can_finish_accuracy_min: 0.9}}
+  start_time_optimizer: {type: grid_search_constraints, priority: P0, targets: {mean_regret_min_max: 12, violations_max: 0}}
+  usual_duration: {type: knn, priority: P0, k: 25}
+  availability_forecast: {type: combination, priority: P1, targets: {brier_max: 0.2}}
+  charge_plan:                        # §10.9 battery MILP (PuLP/CBC)
+    type: milp
+    priority: P1
+    horizon_h: 12
+    step_min: 30
+    lambda_floor: 100                 # penalty per unit of SoC-floor violation (names the binding constraint)
+    lambda_charge: 0.05               # discourage charging outside idle windows
+    time_limit_s: 20
+  day_plan:                           # §10.14 P1 day plan with slot-dependent durations
+    type: milp
+    priority: P1
+    step_min: 30
+    max_tasks: 12
+    lambda_lateness: 5
+    time_limit_s: 30
+
+# §7.8 learnability gate (`tp validate-data`): a trivial model must beat the naive baseline by
+# `min_improvement` on a time-ordered hold-out, and the effects a linear model recovers must have the
+# same sign as the configured truth (datagen coefficients). Task features are built from OBSERVABLE
+# tables only (weather, ground, profiles, start context); trait checks confirm the generator encodes them.
+learnability:
+  holdout_fraction: 0.25
+  min_rows: 40                      # below this a target is reported as skipped, not failed
+  targets:
+    task_duration:                    # wall-clock minutes per unit must be predictable from observables
+      kind: regression
+      target: log_minutes_per_unit
+      baseline: group_median          # naive: median per task type
+      group_by: [type]
+      min_improvement: 0.08           # relative MAE reduction vs. the baseline
+      features: [rain_mm_h_work, moisture_excess, temp_excess_c, visibility_low, experience_years, health_index,
+                 soil_clay, soil_rock, depth_m, haul_km, start_hour, break_overlap_min, stop_weather_hours]
+      expected_signs: {}
+    cycle_time_effects:               # the causal factors, measured where they act: mean log cycle time per task
+      kind: regression
+      target: mean_log_cycle_s
+      baseline: group_median
+      group_by: [type]
+      min_improvement: 0.05
+      conclusive_from_rows: 1000      # from this size every expected effect must be significant (|t| ≥ 2)
+      features: [rain_mm_h_work, moisture_excess, temp_excess_c, visibility_low, experience_years, health_index,
+                 soil_clay, soil_rock, depth_m, haul_km]
+      expected_signs:
+        rain_mm_h_work: "+"
+        moisture_excess: "+"
+        temp_excess_c: "+"
+        experience_years: "-"
+        health_index: "-"
+        soil_rock: "+"
+    component_failure:
+      kind: classification
+      horizon_days: 30
+      min_positives: 5
+      # AUROC ≥ 0.5 + margin. Most breakdowns come from injected fault modes that are independent of wear
+      # (§7.5), and wear-driven faults are usually repaired before failure, so latent health is only a
+      # partial predictor by design (full scale, seed 42: AUROC ≈ 0.60).
+      min_improvement: 0.05
+      features: [health, age_h, dust_pm10_mean, temp_mean]
+      expected_signs: {health: "-"}
+    idle_ratio:                       # P(operator idles | wait window) per operator-day
+      kind: regression
+      baseline: global_mean
+      min_improvement: 0.05
+      conclusive_from_rows: 300
+      min_waits: 3
+      features: [idle_propensity]
+      expected_signs: {idle_propensity: "+"}
+    seatbelt:
+      kind: regression
+      baseline: global_mean
+      min_improvement: 0.02
+      conclusive_from_rows: 300
+      features: [belt_compliance_p]
+      expected_signs: {belt_compliance_p: "+"}
+    sensor_drift:
+      kind: regression
+      baseline: global_mean
+      min_improvement: 0.05
+      conclusive_from_rows: 100
+      sensor: hydraulic.oil_temp
+      features: [wear]
+      expected_signs: {wear: "+"}

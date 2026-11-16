@@ -1,0 +1,81 @@
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TP_ENV: test
+  # No GROQ_API_KEY here: LLM behaviour is tested with fakes + recorded cassettes (§15).
+  PYTHONIOENCODING: utf-8
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: timescale/timescaledb:latest-pg16
+        env:
+          POSTGRES_USER: terrapilot
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: terrapilot
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U terrapilot" --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DATABASE_URL: postgresql+psycopg://terrapilot:ci@localhost:5432/terrapilot
+      TP_RO_PASSWORD: ci-readonly
+      JWT_SECRET: ci-only
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --frozen
+      - name: lint
+        run: uv run ruff check backend scripts && uv run ruff format --check backend scripts
+      - name: types
+        run: uv run mypy
+      - name: config validate
+        run: uv run tp validate-config
+      - name: unit + API tests
+        run: uv run pytest -q
+      - name: small-scale datagen + learnability gate
+        run: |
+          uv run tp gen --scale small --out data/generated
+          uv run tp validate-data --data data/generated
+      - name: migrations + load (Postgres/Timescale)
+        run: uv run tp load --from data/generated
+      - name: read-only role cannot see truth tables
+        run: |
+          PGPASSWORD=ci-readonly psql -h localhost -U tp_ro -d terrapilot -c "SELECT count(*) FROM v_tasks"
+          ! PGPASSWORD=ci-readonly psql -h localhost -U tp_ro -d terrapilot -c "SELECT 1 FROM truth_fault_modes LIMIT 1"
+      - name: OpenAPI contract is current
+        run: |
+          uv run tp openapi --out /tmp/openapi.json
+          diff <(jq -S . /tmp/openapi.json) <(jq -S . apps/web/openapi.json)
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - name: hardcoding gate
+        run: python3 ../../scripts/check_hardcoding.py
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - name: generated API types are current
+        run: npx openapi-typescript openapi.json -o /tmp/schema.d.ts && diff /tmp/schema.d.ts src/api/schema.d.ts
+      - run: npm run build

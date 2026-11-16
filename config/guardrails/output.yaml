@@ -1,0 +1,12 @@
+# Output guard (§13.1): grounding, numeric consistency, banned phrases, PII scrub.
+grounding:
+  citation_pattern: "\\[([\\w./:-]+)\\]"     # answers cite chunk ids / tool ids in square brackets
+  drop_uncited_sentences: true             # uncited claims are dropped; if nothing remains → bounded fallback
+  exempt_patterns: ["^(yes|no)[.,]?$"]
+numeric:
+  tolerance: 0.051                         # numbers must appear in the cited chunks or tool outputs
+banned_phrases: [override the alarm, disable the alarm, bypass the, ignore the alert, turn off the interlock, "safe to continue: yes"]
+pii:
+  patterns:
+    phone: "\\b\\+?\\d[\\d -]{8,}\\d\\b"
+    email: "\\b[\\w.+-]+@[\\w-]+\\.[\\w.]+\\b"

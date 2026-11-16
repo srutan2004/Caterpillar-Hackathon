@@ -1,0 +1,17 @@
+screen: today
+device: any
+grid: {columns: 12, rows: 14, gap_token: space.3}
+modes:
+  normal: {hide: []}
+widgets:
+  - {id: header, type: ScreenHeader, area: [1, 1, 12, 1], bind: "screen:today", props: {title_key: screen.today.title}}
+  - {id: timeline, type: TaskTimeline, area: [1, 2, 8, 5], bind: "resource:shift"}
+  - {id: readiness, type: ReadinessBadge, area: [9, 2, 4, 2], bind: "resource:shift.readiness"}
+  - {id: pacing, type: PacingGauge, area: [9, 4, 4, 3], bind: "resource:shift.pacing"}
+  - {id: best_start, type: StartTimeCurve, area: [1, 7, 5, 3], bind: null}
+  - {id: why, type: FactorBars, area: [6, 7, 3, 3], bind: null}
+  - {id: preconditions, type: PreconditionChecklist, area: [9, 7, 4, 2], bind: null}
+  - {id: walkaround, type: Walkaround, area: [9, 9, 4, 1], bind: null}
+  - {id: maint_alerts, type: MaintenanceAlertCard, area: [1, 10, 5, 5], bind: "resource:maintenance_alerts"}
+  - {id: chat, type: ChatPanel, area: [6, 10, 7, 5], bind: null}
+

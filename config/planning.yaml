@@ -1,0 +1,62 @@
+refresh_min: 15
+start_time:
+  horizon_h: 36
+  step_min: 15
+  quantile_for_deadline: p90
+  objective: {w_p50: 1.0, w_spread: 0.3, w_stop_risk: 0.8, w_safety_risk: 1.5, w_wait: 0.1}
+  min_saving_to_recommend_min: 10         # don't nag for trivial gains
+  usual_duration: {method: knn_similar_tasks, k: 25, lookback_days: 120}
+  preconditions: {charge_target_soc_margin: 0.05, refuel_if_below_pct: 25}
+  fixed_point_iterations: 3
+  stop_risk:
+    hard_stop_ref: datagen/cycles.yaml#stoppages.hard_stop     # same thresholds the site stops work at
+    resume_after_clear_ref: datagen/cycles.yaml#stoppages.resume_after_clear_min
+    min_spread: {gust_ms: 1.5, rain_mm: 0.5, lightning_km: 5.0}
+    block_start_if_p_above: 0.5          # hard constraint: no start into a likely hard stop
+  safety_risk:
+    weights: {ground: 0.4, visibility: 0.3, fatigue: 0.3}
+    moisture_excess_full: 0.10           # moisture above field capacity that counts as full ground risk
+    fatigue_after_h: 6                   # hours on shift after which the fatigue term grows
+    minutes_per_unit: 60                 # J(t) scale: a risk of 1.0 costs this many minutes
+  energy:
+    mid_task_charge_overhead_min: 12     # travel to charger and back, plug in/out
+    charge_while_waiting: true           # waiting time before t can be spent on a charger
+  maintenance_conflict:
+    penalty_min: 30                      # J(t) cost when a service_soon crossing is expected mid-task
+    precheck_before_start: true          # add a maintenance check precondition
+  candidates:
+    within_shift: true
+    allow_overtime: false
+  curve_points_max: 160
+readiness:
+  weights: {health: 0.35, open_maint_alerts: 0.25, energy: 0.2, walkaround: 0.1, cert: 0.1}
+  bands: {go: 80, caution: 60}
+  health_scale: {poor: 0.5, good: 0.9}          # health index → component score (linear, clipped)
+  maint_tier_penalty: {monitor: 0.1, service_soon: 0.5, stop: 1.0}
+  walkaround_score: {ok: 1.0, issues: 0.6, critical: 0.0, missing: 0.5}
+  cert_score: {valid: 1.0, expiring: 0.7, expired: 0.0, missing: 0.0}
+  energy_score_when_short: ratio                 # SoC-available / needed, clipped to [0, 1]
+energy_per_task:
+  lookback_days: 120
+  quantiles: [0.1, 0.5, 0.9]
+  idle_allowance_fraction: 0.08                   # waiting/queueing energy on top of cycle energy
+  min_history_tasks: 5
+  fallback_duty: 0.7                              # manifest power/fuel × duty when history is thin
+service_due:
+  warn_within_h: 50
+  hours_per_day_ref: datagen/world.yaml#shift.length_h   # to turn hours into dates
+shift_view:
+  pacing_step_min: 15
+  statuses_open: [planned, carried_over, in_progress]
+  carryover_days: 1                         # open tasks planned before today count only this far back
+maintenance_window:
+  horizon_days: 7
+  prefer: [predicted_idle, weather_stop, low_priority_tasks]
+  must_be_before: failure_eta_p10
+  bundle_within_h: 50                     # opportunistic bundling of due items
+weather_windows:
+  task_types:
+    lifting: {max_gust_ms: 12, max_rain_mm_h: 0.5, dry_hours_before: 0, max_moisture: 1.0}
+    grading: {max_gust_ms: 20, max_rain_mm_h: 0.2, dry_hours_before: 6, max_moisture: 0.32}
+    compaction: {max_gust_ms: 20, max_rain_mm_h: 0.1, dry_hours_before: 12, max_moisture: 0.28}
+    haul_on_clay: {max_gust_ms: 25, max_rain_mm_h: 1.0, dry_hours_before: 4, max_moisture: 0.35}

@@ -1,0 +1,15 @@
+# Ground model (§7.3): hourly volumetric moisture follows rain with soil-specific drainage.
+soils:
+  clay:   {m_min: 0.18, m_field: 0.30, m_sat: 0.48, infiltration: 0.010, drain_per_h: 0.080, evap_per_h_per_c: 0.00020,
+           density_t_m3: 1.85, bearing_kpa_dry: 220, bearing_moisture_k: 2.2, fos_base: 1.55, fos_moisture_k: 1.1, abrasiveness: 0.4}
+  sand:   {m_min: 0.05, m_field: 0.12, m_sat: 0.38, infiltration: 0.012, drain_per_h: 0.250, evap_per_h_per_c: 0.00030,
+           density_t_m3: 1.70, bearing_kpa_dry: 180, bearing_moisture_k: 0.8, fos_base: 1.45, fos_moisture_k: 0.5, abrasiveness: 1.0}
+  rock:   {m_min: 0.02, m_field: 0.05, m_sat: 0.12, infiltration: 0.004, drain_per_h: 0.400, evap_per_h_per_c: 0.00020,
+           density_t_m3: 2.40, bearing_kpa_dry: 900, bearing_moisture_k: 0.3, fos_base: 2.20, fos_moisture_k: 0.3, abrasiveness: 2.2}
+  gravel: {m_min: 0.04, m_field: 0.10, m_sat: 0.30, infiltration: 0.012, drain_per_h: 0.300, evap_per_h_per_c: 0.00030,
+           density_t_m3: 1.95, bearing_kpa_dry: 400, bearing_moisture_k: 0.5, fos_base: 1.80, fos_moisture_k: 0.4, abrasiveness: 1.4}
+  fill:   {m_min: 0.10, m_field: 0.20, m_sat: 0.42, infiltration: 0.011, drain_per_h: 0.120, evap_per_h_per_c: 0.00025,
+           density_t_m3: 1.75, bearing_kpa_dry: 160, bearing_moisture_k: 1.4, fos_base: 1.40, fos_moisture_k: 0.8, abrasiveness: 0.7}
+ground_risk:
+  weights: {w1_surface: 0.25, w2_slip: 0.25, w3_inv_fos: 0.3, w4_moisture: 0.2}
+  surface_class_risk: {firm: 0.1, rocky: 0.4, loose: 0.6, wet: 0.8}

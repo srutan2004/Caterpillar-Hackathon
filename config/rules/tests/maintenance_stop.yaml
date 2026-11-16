@@ -1,0 +1,12 @@
+# Layer A stop tier runs in the edge rules engine (works with Groq disconnected).
+id: coolant_stop_tier
+manifest: excavator_20t
+tick_s: 5
+until_s: 120
+frames:
+  - {t: 0, set: {engine.coolant_temp: 95, engine.rpm: 1800, engine.oil_pressure: 400}}
+  - {t: 20, set: {engine.coolant_temp: 110}}
+  - {t: 80, set: {engine.coolant_temp: 96}}
+expect:
+  - {t: 50, rule: MAINT_STOP_COOLANT, phase: open, severity: warning}
+  - {t: 110, rule: MAINT_STOP_COOLANT, phase: clear, severity: warning}

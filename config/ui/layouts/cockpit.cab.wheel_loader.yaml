@@ -1,0 +1,15 @@
+screen: cockpit
+device: cab
+machine_class: wheel_loader
+grid: {columns: 12, rows: 8, gap_token: space.2}
+modes:
+  normal: {hide: []}
+widgets:
+  - {id: copilot, type: CopilotBanner, area: [1,1,12,1], bind: advisory}
+  - {id: alerts, type: AlertStack, area: [9,2,4,4], bind: alerts, max_visible_ref: app.ui.alert_stack_max}
+  - {id: twin, type: Twin3D, area: [1,2,8,5], bind: state, props: {camera: chase, show: [geofences, persons, envelope]}}
+  - {id: payload, type: Gauge, area: [9,6,2,2], bind: state.payload.weight_t, sensor_ref: payload.weight_t}
+  - {id: hyd_p, type: Gauge, area: [11,6,2,2], bind: state.hydraulic.pump_pressure, sensor_ref: hydraulic.pump_pressure}
+  - {id: radar, type: ProximityRadar, area: [1,7,4,2], bind: state.proximity, zones_ref: manifest.proximity.zones_m}
+  - {id: task_card, type: TaskProgress, area: [5,7,4,2], bind: state.task}
+  - {id: fuel_card, type: EnergyCard, area: [9,8,4,1], bind: state.energy}

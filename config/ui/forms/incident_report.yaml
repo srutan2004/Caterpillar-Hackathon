@@ -1,0 +1,30 @@
+id: incident_report
+title_key: form.incident_report.title
+submit_key: form.incident_report.submit
+action: {method: POST, path: /api/incidents}
+workflow_states: [new, under_review, root_cause, corrective_action, closed]
+autofill: [machine_id, operator_id, occurred_at, location, machine_state]
+schema:
+  type: object
+  required: [kind, severity, description]
+  properties:
+    kind:
+      type: string
+      title: form.incident_report.kind
+      oneOf:
+        - {const: incident, title: form.incident_report.kind_incident}
+        - {const: near_miss, title: form.incident_report.kind_near_miss}
+        - {const: hazard, title: form.incident_report.kind_hazard}
+    severity:
+      type: string
+      title: form.incident_report.severity
+      oneOf:
+        - {const: low, title: form.incident_report.severity_low}
+        - {const: medium, title: form.incident_report.severity_medium}
+        - {const: high, title: form.incident_report.severity_high}
+    description: {type: string, title: form.incident_report.description, minLength: 3, maxLength: 4000}
+    location: {type: string, title: form.incident_report.location}
+ui_schema:
+  kind: {"ui:widget": radio}
+  severity: {"ui:widget": radio}
+  description: {"ui:widget": textarea}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ask_answer",
+  "type": "object",
+  "properties": {
+    "answer": {"type": "string"},
+    "citations": {"type": "array", "items": {"type": "string"}},
+    "not_in_manual": {"type": "boolean"}
+  },
+  "required": ["answer", "citations", "not_in_manual"],
+  "additionalProperties": false
+}

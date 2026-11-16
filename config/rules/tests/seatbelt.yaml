@@ -1,0 +1,13 @@
+# Rule fixture: frames (state patches applied from time t) → exact expected alert event sequence.
+id: seatbelt_grace_escalate_clear
+manifest: excavator_20t
+tick_s: 1
+until_s: 60
+frames:
+  - {t: 0, set: {seat.occupied: true, seat.belt_fastened: true, hydraulic.pump_pressure: 200, motion.ground_speed_kph: 0}}
+  - {t: 10, set: {seat.belt_fastened: false}}
+  - {t: 50, set: {seat.belt_fastened: true}}
+expect:
+  - {t: 15, rule: SEATBELT_UNFASTENED_ACTIVE, phase: open, severity: caution}
+  - {t: 35, rule: SEATBELT_UNFASTENED_ACTIVE, phase: escalate, severity: warning}
+  - {t: 52, rule: SEATBELT_UNFASTENED_ACTIVE, phase: clear, severity: warning}

@@ -1,0 +1,22 @@
+id: demo_p2p_crossing
+machine: EX-03
+operator: op_017
+site: site_metro
+task: T-2031
+duration_s: 60
+tick_hz: 10
+baseline: {generator: excavator_trenching, skill: 0.6}
+# §10.4.3: an ADT reverses toward the parked excavator's tail swing; both machines must alert.
+peer:
+  machine: AT-04
+  operator: op_006
+  baseline: {generator: adt_haul, skill: 0.6}
+  timeline:
+    - {t: 0, drive: {at_xy: [60, 0], heading_deg: 0, speed_kph: 0}}
+    - {t: 3, drive: {speed_kph: -12}}          # reversing toward the excavator behind it
+timeline:
+  - {t: 0, drive: {at_xy: [0, 0], heading_deg: 0, speed_kph: 0}}
+expect:
+  alerts_in_order: [P2P_CLOSING]
+  peer_alerts_in_order: [P2P_CLOSING, P2P_BLIND_SPOT]
+  both_machines_alert: true

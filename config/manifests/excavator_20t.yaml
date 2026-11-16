@@ -1,0 +1,102 @@
+id: excavator_20t
+class: excavator
+name_key: machine.model.excavator_20t
+powertrain: diesel            # diesel | electric | hybrid
+kinematics: excavator_boom_stick
+id_prefix: EX
+specs:
+  operating_mass_kg: 21500
+  undercarriage_mass_kg: 9350
+  counterweight_kg: 3900
+  counterweight_offset_m: -2.6
+  counterweight_depth_m: 0.6
+  upper_mass_kg: 5900
+  upper_cog_offset_m: -0.4
+  track_gauge_m: 2.39
+  track_length_m: 3.65
+  boom: {length_m: 5.7, mass_kg: 1650, pivot: [0.15, 1.9]}
+  stick: {length_m: 2.9, mass_kg: 750}
+  bucket: {length_m: 1.45, mass_kg: 820, capacity_m3: 1.2}
+  max_dig_depth_m: 6.7
+  rated_payload_t: 2.2
+  idle_fuel_lph: 3.2
+  work_fuel_lph: {eco: 14.0, standard: 17.5, high: 20.5}
+sensors:
+  - {id: hydraulic.pump_pressure, unit: bar, range: [0, 380], hz: 10,
+     bands: {normal: [0, 320], caution: [320, 345], warning: [345, 380]}}
+  - {id: hydraulic.oil_temp, unit: degC, range: [-20, 120], hz: 1,
+     bands: {normal: [-20, 85], caution: [85, 95], warning: [95, 120]}}
+  - {id: hydraulic.pressure_ripple, unit: bar, range: [0, 40], hz: 1}
+  - {id: hydraulic.filter_dp, unit: bar, range: [0, 5], hz: 1}
+  - {id: hydraulic.flow_eff, unit: ratio, range: [0, 1], hz: 1}
+  - {id: engine.rpm, unit: rpm, range: [0, 2400], hz: 10}
+  - {id: engine.load_pct, unit: pct, range: [0, 100], hz: 1}
+  - {id: engine.coolant_temp, unit: degC, range: [-20, 130], hz: 1,
+     bands: {normal: [-20, 98], caution: [98, 105], warning: [105, 130]}}
+  - {id: engine.oil_pressure, unit: kPa, range: [0, 700], hz: 1}
+  - {id: engine.fan_speed_pct, unit: pct, range: [0, 100], hz: 1}
+  - {id: engine.air_filter_restriction, unit: kPa, range: [0, 10], hz: 1}
+  - {id: fuel.level_pct, unit: pct, range: [0, 100], hz: 1}
+  - {id: fuel.water_in_fuel, type: bool}
+  - {id: dpf.soot_load_pct, unit: pct, range: [0, 120], hz: 1}
+  - {id: electrical.system_voltage, unit: V, range: [0, 32], hz: 1}
+  - {id: seat.occupied, type: bool}
+  - {id: seat.belt_fastened, type: bool}
+  - {id: imu.pitch_deg, unit: deg, range: [-45, 45], hz: 10}
+  - {id: imu.roll_deg, unit: deg, range: [-45, 45], hz: 10}
+  - {id: boom.angle_deg, unit: deg, range: [-60, 75], hz: 10}
+  - {id: stick.angle_deg, unit: deg, range: [-160, -30], hz: 10}
+  - {id: bucket.angle_deg, unit: deg, range: [-180, 40], hz: 10}
+  - {id: swing.angle_deg, unit: deg, range: [-180, 180], hz: 10}
+  - {id: swing.rate_deg_s, unit: deg_s, range: [-60, 60], hz: 10}
+  - {id: swing.vibration_rms, unit: mm_s, range: [0, 30], hz: 1}
+  - {id: undercarriage.track_tension_mm, unit: mm, range: [0, 80], hz: 0.1}
+  - {id: motion.ground_speed_kph, unit: kph, range: [0, 6], hz: 10}
+  - {id: gps.position, type: geo, hz: 1}
+  - {id: camera.front, type: stream}
+  - {id: camera.rear, type: stream}
+  - {id: radar.rear, type: stream}
+  - {id: p2p.beacon, type: stream}
+envelopes:
+  stability_margin: {advisory: 1.8, caution: 1.5, warning: 1.25}
+  side_slope_deg: {caution: 10, warning: 15}
+  travel_speed_boom_raised_kph: {caution: 2.0}
+  swing_rate_near_person_deg_s: {caution: 20}
+  relief_pressure_bar: 350
+proximity:
+  zones_m: {advisory: 15, caution: 8, warning: 4}
+  ttc_s: {caution: 6, warning: 3}
+  swing_radius_m: ref:specs.derived.tail_swing_radius
+  min_moving_speed_ms: 0.3
+motion:
+  moving_threshold_kph: 0.5
+  hydraulic_active_pressure_bar: 40
+seatbelt: {grace_s: 5, escalate_after_s: 20}
+idle: {min_episode_s: 180, excessive_s: 600, max_idle_ratio: 0.25, high_rpm_threshold: 1400}
+pre_shift: {walkaround_required: true, seatbelt_check_required: true}
+components: [engine, hydraulic_pump, swing_drive, undercarriage, get, dpf, final_drive, cooling, electrical]
+maintenance_sensors:          # drives §10.13; limits and signatures are referenced, not repeated
+  - {id: engine.coolant_temp, component: cooling, limits_ref: maintenance/sensor_limits.yaml#coolant_temp, forecast: true}
+  - {id: engine.oil_pressure, component: engine, limits_ref: maintenance/sensor_limits.yaml#oil_pressure_vs_rpm, normalise_by: engine.rpm}
+  - {id: hydraulic.oil_temp, component: hydraulic_pump, limits_ref: maintenance/sensor_limits.yaml#hyd_oil_temp, forecast: true}
+  - {id: hydraulic.pressure_ripple, component: hydraulic_pump, limits_ref: maintenance/sensor_limits.yaml#pump_ripple, forecast: true}
+  - {id: hydraulic.filter_dp, component: hydraulic_pump, limits_ref: maintenance/sensor_limits.yaml#filter_dp, forecast: true}
+  - {id: engine.air_filter_restriction, component: engine, limits_ref: maintenance/sensor_limits.yaml#air_restriction, forecast: true}
+  - {id: dpf.soot_load_pct, component: dpf, limits_ref: maintenance/sensor_limits.yaml#dpf_soot, forecast: true}
+  - {id: fuel.water_in_fuel, component: engine, limits_ref: maintenance/sensor_limits.yaml#wif}
+  - {id: electrical.system_voltage, component: electrical, limits_ref: maintenance/sensor_limits.yaml#sys_voltage}
+  - {id: swing.vibration_rms, component: swing_drive, limits_ref: maintenance/sensor_limits.yaml#swing_vib, forecast: true}
+  - {id: undercarriage.track_tension_mm, component: undercarriage, limits_ref: maintenance/sensor_limits.yaml#track_tension}
+service_intervals_ref: maintenance/service_intervals.yaml#excavator_20t
+energy:
+  refuel_rate_lpm: 60            # for refuel-time estimate
+  tank_l: 400
+training:
+  required_modules: [safety_basics, excavator_controls, trenching_101]
+  cert_validity_days: 365
+  expiry_grace_days: 14
+walkaround: ref:walkaround/excavator.yaml
+controls: ref:controls/excavator_iso.yaml     # used by simulator & in-cab hints
+knowledge_scope: [excavator, common]          # RAG payload filter
+ui:
+  layouts: {cab: ui/layouts/cockpit.cab.excavator.yaml, mobile: ui/layouts/cockpit.mobile.yaml}

@@ -1,0 +1,14 @@
+id: demo_utility
+machine: EX-03
+operator: op_017
+site: site_metro
+task: T-2031
+duration_s: 120
+tick_hz: 10
+baseline: {generator: excavator_trenching, skill: 0.6}
+timeline:
+  - {t: 10, inject: approach_buried_utility, params: {utility_id: U-07, closing_speed_ms: 0.05}}
+expect:
+  alerts_in_order: [UTILITY_APPROACH]
+  escalations: [{rule: UTILITY_APPROACH, to: caution}]
+  advisory_text_contains_facts: [utility_id, distance_m]

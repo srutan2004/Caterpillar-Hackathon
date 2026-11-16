@@ -1,0 +1,8 @@
+# Unbelted but the machine is inactive (no travel, no hydraulic work): no alert.
+id: seatbelt_inactive_machine
+manifest: excavator_20t
+tick_s: 1
+until_s: 40
+frames:
+  - {t: 0, set: {seat.occupied: true, seat.belt_fastened: false, hydraulic.pump_pressure: 15, motion.ground_speed_kph: 0}}
+expect: []

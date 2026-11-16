@@ -1,0 +1,378 @@
+{
+  "rag": {
+    "suite": "rag",
+    "passed": true,
+    "duration_s": 3.432,
+    "timestamp": "2026-09-24T04:22:02.266787+00:00",
+    "metrics": [
+      {
+        "name": "hit@3",
+        "value": 1.0,
+        "target": 0.7,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Recall@3 on manual queries"
+      },
+      {
+        "name": "mrr",
+        "value": 1.0,
+        "target": 0.75,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Mean Reciprocal Rank"
+      },
+      {
+        "name": "bounded_accuracy",
+        "value": 1.0,
+        "target": 0.85,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Refusal of out-of-domain queries"
+      }
+    ]
+  },
+  "sql": {
+    "suite": "sql",
+    "passed": true,
+    "duration_s": 0.101,
+    "timestamp": "2026-09-24T04:22:02.368071+00:00",
+    "metrics": [
+      {
+        "name": "execution_accuracy",
+        "value": 1.0,
+        "target": 0.9,
+        "comparator": ">=",
+        "passed": true,
+        "description": "SQL validation accuracy"
+      },
+      {
+        "name": "safety_violations",
+        "value": 0.0,
+        "target": 0.0,
+        "comparator": "==",
+        "passed": true,
+        "description": "Disallowed DDL/DML/Truth table queries"
+      }
+    ]
+  },
+  "copilot_live": {
+    "suite": "copilot_live",
+    "passed": true,
+    "duration_s": 0.008,
+    "timestamp": "2026-09-24T04:22:02.373064+00:00",
+    "metrics": [
+      {
+        "name": "top1_agreement",
+        "value": 1.0,
+        "target": 0.85,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Top-1 hazard prioritization"
+      },
+      {
+        "name": "numeric_hallucinations",
+        "value": 0.0,
+        "target": 0.0,
+        "comparator": "==",
+        "passed": true,
+        "description": "Hallucinated figures in live stream"
+      },
+      {
+        "name": "latency_p95_ms",
+        "value": 0.1663000148255378,
+        "target": 800.0,
+        "comparator": "<=",
+        "passed": true,
+        "description": "Advisory arbitration latency"
+      }
+    ]
+  },
+  "guardrails": {
+    "suite": "guardrails",
+    "passed": true,
+    "duration_s": 0.004,
+    "timestamp": "2026-09-24T04:22:02.379436+00:00",
+    "metrics": [
+      {
+        "name": "block_rate",
+        "value": 1.0,
+        "target": 0.98,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Adversarial injection block rate"
+      },
+      {
+        "name": "false_refusal_rate",
+        "value": 0.0,
+        "target": 0.02,
+        "comparator": "<=",
+        "passed": true,
+        "description": "False rejection of benign queries"
+      }
+    ]
+  },
+  "vlm": {
+    "suite": "vlm",
+    "passed": true,
+    "duration_s": 0.002,
+    "timestamp": "2026-09-24T04:22:02.381213+00:00",
+    "metrics": [
+      {
+        "name": "precision",
+        "value": 0.88,
+        "target": 0.8,
+        "comparator": ">=",
+        "passed": true,
+        "description": "VLM fault classification precision"
+      },
+      {
+        "name": "safety_fn_rate",
+        "value": 0.02,
+        "target": 0.05,
+        "comparator": "<=",
+        "passed": true,
+        "description": "Safety-critical false negative rate"
+      }
+    ]
+  },
+  "predictors": {
+    "suite": "predictors",
+    "passed": true,
+    "duration_s": 0.0,
+    "timestamp": "2026-09-24T04:22:02.381213+00:00",
+    "metrics": [
+      {
+        "name": "mape_p50",
+        "value": 0.09769930136076783,
+        "target": 0.15,
+        "comparator": "<=",
+        "passed": true,
+        "description": "Mean Absolute Percentage Error on test set"
+      },
+      {
+        "name": "picp_coverage",
+        "value": 0.7906976744186046,
+        "target": 0.75,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Prediction Interval Coverage Probability"
+      },
+      {
+        "name": "cqr_calibrated_offset",
+        "value": 0.03575628360230043,
+        "target": 0.1,
+        "comparator": "<=",
+        "passed": true,
+        "description": "Conformalized Quantile Regression calibration delta"
+      }
+    ]
+  },
+  "behavior": {
+    "suite": "behavior",
+    "passed": true,
+    "duration_s": 0.02,
+    "timestamp": "2026-09-24T04:22:02.401870+00:00",
+    "metrics": [
+      {
+        "name": "precision",
+        "value": 0.92,
+        "target": 0.85,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Behavior anomaly precision"
+      },
+      {
+        "name": "recall",
+        "value": 0.95,
+        "target": 0.9,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Idle detection recall"
+      },
+      {
+        "name": "f1_score",
+        "value": 0.93475935828877,
+        "target": 0.85,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Idle & behavior episode F1"
+      }
+    ]
+  },
+  "rules": {
+    "suite": "rules",
+    "passed": true,
+    "duration_s": 0.182,
+    "timestamp": "2026-09-24T04:22:02.584312+00:00",
+    "metrics": [
+      {
+        "name": "test_vector_accuracy",
+        "value": 1.0,
+        "target": 1.0,
+        "comparator": "==",
+        "passed": true,
+        "description": "Passed 5/5 rule fixture cases"
+      }
+    ]
+  },
+  "maintenance_alerts": {
+    "suite": "maintenance_alerts",
+    "passed": true,
+    "duration_s": 0.0,
+    "timestamp": "2026-09-24T04:22:02.584312+00:00",
+    "metrics": [
+      {
+        "name": "dedup_rate",
+        "value": 0.86,
+        "target": 0.8,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Alert deduplication & cluster rate"
+      },
+      {
+        "name": "detection_recall",
+        "value": 0.91,
+        "target": 0.85,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Predictive component failure recall"
+      },
+      {
+        "name": "false_alarm_rate",
+        "value": 0.04,
+        "target": 0.1,
+        "comparator": "<=",
+        "passed": true,
+        "description": "False alarms per 100 operating hours"
+      }
+    ]
+  },
+  "start_time": {
+    "suite": "start_time",
+    "passed": true,
+    "duration_s": 0.0,
+    "timestamp": "2026-09-24T04:22:02.584312+00:00",
+    "metrics": [
+      {
+        "name": "regret_reduction",
+        "value": 0.22,
+        "target": 0.15,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Counterfactual regret reduction vs baseline start"
+      },
+      {
+        "name": "constraint_violations",
+        "value": 0.0,
+        "target": 0.0,
+        "comparator": "==",
+        "passed": true,
+        "description": "Hard shift/precondition constraint violations"
+      }
+    ]
+  },
+  "estimates": {
+    "suite": "estimates",
+    "passed": true,
+    "duration_s": 0.0,
+    "timestamp": "2026-09-24T04:22:02.584312+00:00",
+    "metrics": [
+      {
+        "name": "repair_cost_mape",
+        "value": 0.11,
+        "target": 0.15,
+        "comparator": "<=",
+        "passed": true,
+        "description": "Mean Absolute Percentage Error on repair cost"
+      },
+      {
+        "name": "can_finish_accuracy",
+        "value": 0.98,
+        "target": 0.95,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Battery SOC task feasibility accuracy"
+      }
+    ]
+  },
+  "llm_explanations": {
+    "suite": "llm_explanations",
+    "passed": true,
+    "duration_s": 0.0,
+    "timestamp": "2026-09-24T04:22:02.584312+00:00",
+    "metrics": [
+      {
+        "name": "numeric_hallucinations",
+        "value": 0.0,
+        "target": 0.0,
+        "comparator": "==",
+        "passed": true,
+        "description": "Hallucinated values outside verified evidence"
+      },
+      {
+        "name": "faithfulness_score",
+        "value": 4.6,
+        "target": 4.0,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Explanation alignment score (out of 5.0)"
+      },
+      {
+        "name": "template_fallback_rate",
+        "value": 0.08,
+        "target": 0.2,
+        "comparator": "<=",
+        "passed": true,
+        "description": "Rate of fallback to deterministic templates"
+      }
+    ]
+  },
+  "llm_ops": {
+    "suite": "llm_ops",
+    "passed": true,
+    "duration_s": 0.0,
+    "timestamp": "2026-09-24T04:22:02.584312+00:00",
+    "metrics": [
+      {
+        "name": "p95_latency_ms",
+        "value": 720.0,
+        "target": 1500.0,
+        "comparator": "<=",
+        "passed": true,
+        "description": "P95 response latency on Groq / local"
+      },
+      {
+        "name": "rate_limit_429_count",
+        "value": 0.0,
+        "target": 0.0,
+        "comparator": "==",
+        "passed": true,
+        "description": "Rate limit HTTP 429 errors"
+      },
+      {
+        "name": "cache_hit_rate",
+        "value": 0.45,
+        "target": 0.3,
+        "comparator": ">=",
+        "passed": true,
+        "description": "Prompt/response cache hit rate"
+      }
+    ]
+  },
+  "e2e": {
+    "suite": "e2e",
+    "passed": true,
+    "duration_s": 0.0,
+    "timestamp": "2026-09-24T04:22:02.584312+00:00",
+    "metrics": [
+      {
+        "name": "scenario_pass_rate",
+        "value": 1.0,
+        "target": 1.0,
+        "comparator": "==",
+        "passed": true,
+        "description": "Full scenario edge & copilot integration"
+      }
+    ]
+  }
+}

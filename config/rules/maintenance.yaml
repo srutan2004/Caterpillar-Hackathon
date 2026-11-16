@@ -1,0 +1,45 @@
+# Stop-tier maintenance limits run inside the edge rules engine so they work offline (§10.13 layer A).
+# Each rule points at a sensor_limits entry; bands are never repeated here.
+- id: MAINT_STOP_COOLANT
+  applies_to: [excavator, wheel_loader, adt]
+  powertrain: [diesel, hybrid]
+  sensor: engine.coolant_temp
+  limits_ref: maintenance/sensor_limits.yaml#coolant_temp
+  tier: stop
+  severity: warning
+  message_key: alert.maintenance.stop_tier
+  copilot_priority: 85
+- id: MAINT_STOP_OIL_PRESSURE
+  applies_to: [excavator, wheel_loader, adt]
+  powertrain: [diesel, hybrid]
+  sensor: engine.oil_pressure
+  limits_ref: maintenance/sensor_limits.yaml#oil_pressure_vs_rpm
+  tier: stop
+  severity: warning
+  message_key: alert.maintenance.stop_tier
+  copilot_priority: 86
+- id: MAINT_STOP_HYD_TEMP
+  applies_to: [excavator, wheel_loader]
+  sensor: hydraulic.oil_temp
+  limits_ref: maintenance/sensor_limits.yaml#hyd_oil_temp
+  tier: stop
+  severity: caution
+  message_key: alert.maintenance.stop_tier
+  copilot_priority: 80
+- id: MAINT_STOP_BRAKE_TEMP
+  applies_to: [wheel_loader, adt]
+  sensor: brakes.temp
+  limits_ref: maintenance/sensor_limits.yaml#brake_temp
+  tier: stop
+  severity: warning
+  message_key: alert.maintenance.stop_tier
+  copilot_priority: 87
+- id: MAINT_STOP_INSULATION
+  applies_to: [excavator]
+  powertrain: [electric]
+  sensor: battery.insulation_kohm
+  limits_ref: maintenance/sensor_limits.yaml#insulation
+  tier: stop
+  severity: warning
+  message_key: alert.maintenance.stop_tier
+  copilot_priority: 89

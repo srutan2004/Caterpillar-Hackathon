@@ -1,0 +1,22 @@
+id: excavator_iso
+pattern: iso            # iso | sae
+selectable_patterns: [iso, sae]
+axes:
+  iso:
+    left_x: swing
+    left_y: stick
+    right_x: bucket
+    right_y: boom
+  sae:
+    left_x: swing
+    left_y: boom
+    right_x: bucket
+    right_y: stick
+keyboard:
+  swing: {neg: KeyA, pos: KeyD}
+  stick: {neg: KeyW, pos: KeyS}
+  boom: {neg: ArrowUp, pos: ArrowDown}
+  bucket: {neg: ArrowLeft, pos: ArrowRight}
+  travel_left: {neg: KeyQ, pos: KeyZ}
+  travel_right: {neg: KeyE, pos: KeyC}
+deadband: 0.05

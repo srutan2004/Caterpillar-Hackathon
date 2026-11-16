@@ -1,0 +1,12 @@
+id: adt_std
+pattern: steering_wheel
+selectable_patterns: [steering_wheel]
+axes:
+  steering_wheel:
+    steering: articulation
+    body_lever: body
+keyboard:
+  steer: {neg: KeyA, pos: KeyD}
+  throttle: {neg: KeyS, pos: KeyW}
+  body: {neg: ArrowDown, pos: ArrowUp}
+deadband: 0.05

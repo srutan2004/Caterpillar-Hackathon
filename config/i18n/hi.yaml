@@ -1,0 +1,861 @@
+app:
+  tagline: बुद्धिमान ऑपरेटर साथी
+  loading: लोड हो रहा है…
+  offline_banner: कनेक्शन टूटा — एज सुरक्षा सक्रिय है
+  reconnecting: पुनः कनेक्ट हो रहा है…
+  error_generic: कुछ गलत हो गया। कृपया पुनः प्रयास करें।
+  sign_out: साइन आउट
+  signed_in_as: '{{name}} ({{role}}) के रूप में साइन इन'
+  unknown_widget: 'अज्ञात विजेट प्रकार: {{type}}'
+  widget_pending: अभी उपलब्ध नहीं है
+  empty: दिखाने के लिए कुछ नहीं है
+  device: डिवाइस
+  retry: पुनः प्रयास करें
+role:
+  anonymous: अतिथि
+  operator: ऑपरेटर
+  supervisor: पर्यवेक्षक
+  instructor: प्रशिक्षक
+  technician: तकनीशियन
+  admin: व्यवस्थापक
+device:
+  cab: केबिन डिस्प्ले
+  mobile: मोबाइल
+  desk: डेस्क
+nav:
+  login: साइन इन
+  machine_select: मशीनें
+  cockpit: कॉकपिट
+  today: आज का दिन
+  training: प्रशिक्षण
+  maintenance: रखरखाव
+  fleet: बेड़ा
+  ask: पूछें
+  incidents: घटनाएं
+  admin: व्यवस्थापक
+screen:
+  login:
+    title: साइन इन करें
+    subtitle: अपना बैज आईडी और पिन दर्ज करें
+  machine_select:
+    title: अपनी मशीन चुनें
+    subtitle: मशीन पर क्यूआर कोड स्कैन करें या सूची से चुनें
+  cockpit:
+    title: कॉकपिट
+  today:
+    title: आज की योजना
+  training:
+    title: प्रशिक्षण केंद्र
+  ask:
+    title: प्रश्न पूछें
+    subtitle: मैनुअल, मशीन डेटा और योजना से उत्तर
+  maintenance:
+    title: रखरखाव
+  fleet:
+    title: बेड़ा विवरण
+  incidents:
+    title: घटनाएं
+  admin:
+    title: प्रशासन
+form:
+  login:
+    title: साइन इन
+    username: बैज आईडी या उपयोगकर्ता नाम
+    pin: पिन
+    submit: साइन इन
+    error_invalid: बैज आईडी या पिन अमान्य है
+  incident_report:
+    title: घटना की रिपोर्ट करें
+    kind: रिपोर्ट प्रकार
+    kind_incident: घटना
+    kind_near_miss: बाल-बाल बचे
+    kind_hazard: खतरा अवलोकन
+    severity: गंभीरता
+    severity_low: कम
+    severity_medium: मध्यम
+    severity_high: उच्च
+    description: क्या हुआ था?
+    location: स्थान
+    submit: रिपोर्ट सबमिट करें
+  service_request:
+    title: सेवा या पुर्जे का अनुरोध करें
+    kind: अनुरोध प्रकार
+    kind_part: पुर्जा
+    kind_service: सेवा
+    fault_code: त्रुटि कोड
+    notes: टिप्पणियाँ
+    submit: अनुरोध भेजें
+  booking:
+    title: प्रशिक्षक सत्र बुक करें
+    slot: समय स्लॉट
+    module: मॉड्यूल
+    notes: टिप्पणियाँ
+    submit: बुक करें
+gating:
+  full: संचालन के लिए स्वीकृत
+  restricted: प्रतिबंधित — प्रमाणन अनुग्रह अवधि में है; पर्यवेक्षक को सूचित कर दिया
+    गया है
+  blocked: स्वीकृत नहीं — पहले आवश्यक प्रशिक्षण पूरा करें
+  module:
+    valid: मान्य
+    expiring: जल्द समाप्त होने वाला
+    grace: रियायती अवधि
+    expired: समाप्त
+    missing: अनुपस्थित
+  expires_on: समाप्त तिथि {{date}}
+  continue: कॉकपिट में जारी रखें
+  book: प्रशिक्षक बुक करें
+validation:
+  required: यह फ़ील्ड अनिवार्य है
+  pattern: अमान्य प्रारूप
+  minLength: बहुत छोटा
+  maxLength: बहुत लंबा
+  generic: अमान्य मान
+widget:
+  training_hub:
+    title: आपका प्रशिक्षण
+  slot_calendar:
+    title: प्रशिक्षक सत्र
+  health_list:
+    title: घटक स्वास्थ्य
+    health: स्थिति {{pct}}
+    risk: '{{days}} दिनों में {{pct}} जोखिम'
+    rul: लगभग {{h}} घंटे शेष
+  gantt:
+    title: चार्ज योजना
+    solve: चार्ज योजना बनाएं
+    feasible: योजना हर मशीन को न्यूनतम स्तर से ऊपर रखती है
+    infeasible: साध्य नहीं — {{constraint}} द्वारा सीमित
+    chargers: '{{n}} चार्जर'
+    charge: चार्जिंग
+    work: कार्यरत
+    soc: चार्ज स्थिति
+  availability_chart:
+    title: बेड़े की उपलब्धता
+    fleet: औसत उपलब्धता
+    y: उपलब्ध शिफ्ट का अनुपात
+  task_timeline:
+    title: आज के कार्य
+    shift: शिफ्ट {{start}}–{{end}} · मशीन {{machine}}
+    weather: आगामी घंटों का मौसम
+    temp: '{{v}} °C'
+    rain: '{{v}} मिमी वर्षा'
+    gust: हवा के झोंके {{v}} मी/से
+    none: आज के लिए कोई कार्य नहीं सौंपा गया
+    window: नियोजित {{start}}–{{end}}
+    deadline: नियत समय {{time}}
+    progress: '{{total}} {{unit}} में से {{done}}'
+    took: '{{d}} लगा'
+    etc: अनुमानित {{p50}}
+    band: संभावित {{p10}}–{{p90}}
+    live_etc: लाइव समाप्ति अनुमान {{time}}
+    factor: '{{factor}} {{sign}}{{minutes}}'
+    best_start: सर्वोत्तम प्रारंभ {{time}}
+    start_now: अभी शुरू करें
+    vs_usual: सामान्य से {{minutes}} तेज
+    accepted: स्वीकृत
+    energy_ok: पर्याप्त ऊर्जा (मार्जिन {{margin}})
+    energy_charge: पहले {{minutes}} चार्ज करें
+    energy_refuel: पहले ईंधन भरें ({{minutes}})
+    maintenance: '{{component}}: {{tier}}'
+  pacing_gauge:
+    title: शिफ्ट गति
+    benchmark: योजना
+    actual: पूर्ण
+    expected: योजना अनुसार अब तक {{pct}}
+    behind: '{{pct}} पीछे'
+    on_track: सही गति पर (+{{pct}})
+    y: आज के नियोजित कार्य का अनुपात
+  readiness_badge:
+    title: मशीन तत्परता
+  start_time_curve:
+    title: सर्वोत्तम प्रारंभ समय
+    p50: अपेक्षित अवधि
+    band: संभावित सीमा (p10–p90)
+    now: अभी
+    recommended: अनुशंसित
+    usual: सामान्य
+    headline_change: '{{time}} पर प्रारंभ करें — अभी प्रारंभ करने से {{minutes}} कम'
+    headline_keep: अभी प्रारंभ करना सबसे अच्छा विकल्प है
+    vs_usual: सामान्य से {{minutes}} तेज
+    y: चार्जिंग या ईंधन भरने सहित अवधि
+    binding: 'प्रतिबंध: {{list}}'
+  factor_bars:
+    title: यह प्रारंभ समय क्यों
+    none: कोई विशेष कारक नहीं
+    value: '{{sign}}{{minutes}}'
+  precondition_checklist:
+    title: शुरू करने से पहले
+    none: तैयार करने के लिए कुछ नहीं
+    when: '{{start}}–{{end}}'
+    slot: तकनीशियन स्लॉट {{time}}
+    accept: योजना स्वीकार करें
+    accepted: योजना स्वीकृत
+  walkaround:
+    title: शिफ्ट-पूर्व निरीक्षण
+  cab_notes:
+    title: केबिन नोट्स
+    placeholder: नोट टाइप करें या 'बोलें' दबाएं
+    save: नोट सहेजें
+    talk: बोलें
+    stop: रोकें और भेजें
+    stt_unavailable: वॉयस नोट्स अनुपलब्ध हैं — कृपया टाइप करें
+  maintenance_alert_card:
+    title: रखरखाव चेतावनियां
+    none: कोई सक्रिय रखरखाव चेतावनी नहीं
+    eta: लगभग {{p50}} घंटों में {{tier}} (न्यूनतम {{p10}} घंटे)
+    safe: जारी रखना सुरक्षित है
+    parts: 'पुर्जे: {{list}}'
+    part: '{{part}} (स्टॉक में {{stock}}, लीड समय {{days}} दिन)'
+    repair: मरम्मत लगभग {{hours}} घंटे, {{cost}}
+  sensor_forecast_chart:
+    title: सेंसर पूर्वानुमान
+    none: सेंसर रुझान वाली चेतावनी चुनें
+    history: मापा गया
+    forecast: पूर्वानुमान
+    cone: पूर्वानुमान सीमा
+    eta: '{{tier}}: लगभग {{p50}} घंटे (न्यूनतम {{p10}} घंटे)'
+  service_countdown:
+    title: आगामी सेवा
+    overdue: '{{h}} घंटे विलंबित'
+    due_in: '{{h}} घंटों में नियत ({{day}})'
+    severity: साइट गंभीरता ×{{x}}
+  incident_playback:
+    title: घटनाएं
+    none: कोई घटना दर्ज नहीं
+    play: चलाएं
+    pause: रोकें
+    scrub: प्लेबैक स्थिति
+    markers: क्लिप के दौरान चेतावनियां
+    people: '{{n}} व्यक्ति ट्रैक किए गए'
+    nearest: निकटतम {{d}} मी
+    no_clip: इस रिपोर्ट के लिए कोई ब्लैक-बॉक्स रिकॉर्डिंग नहीं
+    advance: 'स्थिति बदलें: {{status}}'
+  machine_list:
+    title: आपकी साइट पर मशीनें
+    select: चुनें
+    columns:
+      id: मशीन
+      model: मॉडल
+      status: स्थिति
+      powertrain: पावरट्रेन
+      hour_meter: घंटे
+  machine_header:
+    title: मशीन
+  copilot_banner:
+    title: सह-चालक (Copilot)
+  alert_stack:
+    title: चेतावनियां
+    none: कोई सक्रिय चेतावनी नहीं
+  twin_3d:
+    title: मशीन दृश्य
+    caption: डिजाइन ग्रेड के सापेक्ष आर्म का दृश्य
+    design_grade: डिजाइन ग्रेड
+    tip: बकेट टिप
+  stability_dial:
+    title: स्थिरता
+    margin: स्थिरता मार्जिन
+    limiting_axis: 'सीमित अक्ष: {{axis}}'
+    axis_lateral: किनारे की ओर
+    axis_longitudinal: आगे या पीछे की ओर
+    hint: 'सर्वोत्तम कार्रवाई: {{hint}}'
+    hint_reduce_reach: पहुंच कम करें
+    hint_lower_load: भार नीचे करें
+    hint_stop_slew: घुमाना बंद करें
+    hint_none: आवश्यकता नहीं
+  gauge:
+    title: गेज
+  grade_profile:
+    title: ग्रेड प्रोफाइल
+    raise: ऊपर उठाएं
+    lower: नीचे करें
+    on_grade: ग्रेड पर
+    inactive: कटाई नहीं हो रही
+    deviation: डिजाइन से विचलन
+  proximity_radar:
+    title: निकटता रडार
+    nearest: निकटतम व्यक्ति
+    ttc: टकराव का समय
+    none: कोई व्यक्ति ट्रैक नहीं किया गया
+    ppe_missing: कार्य क्षेत्र में पीपीई अनुपस्थित
+    person: 'व्यक्ति {{id}}: {{distance}}'
+    zone_advisory: सलाह क्षेत्र
+    zone_caution: सावधानी क्षेत्र
+    zone_warning: चेतावनी क्षेत्र
+  task_progress:
+    title: वर्तमान कार्य
+    progress: '{{total}} में से {{done}}'
+    cycles: '{{n}} चक्र'
+    etc: समाप्ति लगभग {{time}}
+    remaining: '{{p50}} शेष (संभावित {{p10}}–{{p90}})'
+    phase: 'चरण: {{phase}}'
+  energy_card:
+    title: ऊर्जा
+    fuel: ईंधन
+    soc: बैटरी
+  anomaly_board:
+    title: असामान्य चक्र
+    empty: कोई विसंगति नहीं पाई गई
+    score: स्कोर {{score}}
+  kpi_tile:
+    title: मुख्य प्रदर्शन संकेतक
+    idle_cost: इस सप्ताह निष्क्रिय लागत
+  data_table:
+    title: तालिका
+    empty: कोई डेटा उपलब्ध नहीं
+    column_name: नाम
+    column_status: स्थिति
+    column_detail: विवरण
+  map_view:
+    title: साइट मानचित्र
+    loading_zone: लोडिंग क्षेत्र
+    dump_zone: डंप क्षेत्र
+    charging_station: चार्जिंग स्टेशन
+    speed: '{{kph}} किमी/घं'
+  compliance_board:
+    title: अनुपालन
+    seatbelt: सीटबेल्ट
+    ppe: पीपीई
+    unbuckled_time: '{{minutes}} बिना बेल्ट'
+    all_compliant: सभी सक्रिय ऑपरेटर अनुपालक हैं
+    violations: '{{n}} पीपीई उल्लंघन'
+    all_ok: सभी अनुपालक
+  maintenance_calendar:
+    title: रखरखाव अनुसूची
+    empty: कोई सेवा विंडो निर्धारित नहीं
+    duration: '{{h}} घंटे'
+    window: '{{start}} – {{end}}'
+  task_card:
+    title: कार्य विवरण
+    empty: कोई कार्य चयनित नहीं
+  video_player:
+    title: वीडियो प्लेयर
+    empty: कोई वीडियो चयनित नहीं
+    play: चलाएं
+    pause: रोकें
+    chapters: अध्याय
+  sim_viewport:
+    title: मशीन सिम्युलेटर
+    arm_angles: बूम {{boom}}°, स्टिक {{stick}}°, बकेट {{bucket}}°
+    payload: 'पेलोड: {{t}} टन'
+  llm_status_tile:
+    title: एलएलएम स्थिति
+    profile: प्रोफाइल
+    profile_online: ऑनलाइन (Groq)
+    profile_offline: ऑफलाइन (स्थानीय मॉडल और टेम्पलेट)
+    key: ग्रोक एपीआई कुंजी
+    'yes': विन्यस्त
+    'no': अनुपस्थित
+    task: कार्य
+    calls: कॉल्स
+    fallback_rate: फॉलबैक दर
+    no_calls: अभी तक कोई कॉल नहीं
+machine:
+  class:
+    excavator: Excavator
+    wheel_loader: Wheel loader
+    adt: Articulated dump truck
+  model:
+    excavator_20t: 20 t hydraulic excavator
+    excavator_20t_electric: 20 t electric excavator
+    wheel_loader_m: Medium wheel loader
+    adt_30t: 30 t articulated dump truck
+  status:
+    available: Available
+    in_use: In use
+    maintenance: In maintenance
+    down: Down
+  powertrain:
+    diesel: Diesel
+    electric: Electric
+    hybrid: Hybrid
+sensor:
+  hydraulic__filter_dp: Hydraulic filter ΔP
+  hydraulic__pressure_ripple: Pump pressure ripple
+  hydraulic__flow_eff: Pump flow efficiency
+  engine__oil_pressure: Engine oil pressure
+  engine__air_filter_restriction: Air filter restriction
+  engine__load_pct: Engine load
+  engine__fan_speed_pct: Fan speed
+  dpf__soot_load_pct: DPF soot load
+  fuel__water_in_fuel: Water in fuel
+  electrical__system_voltage: System voltage
+  swing__vibration_rms: Swing drive vibration
+  undercarriage__track_tension_mm: Track sag
+  transmission__oil_temp: Transmission oil temperature
+  brakes__temp: Brake temperature
+  tyre__pressure_kpa: Tyre pressure
+  tyre__temp: Tyre temperature
+  suspension__strut_pressure: Strut pressure
+  battery__cell_dv_mv: Cell voltage spread
+  battery__pack_temp: Battery pack temperature
+  battery__insulation_kohm: Insulation resistance
+  hydraulic__pump_pressure: Pump pressure
+  hydraulic__oil_temp: Hydraulic oil temperature
+  engine__coolant_temp: Coolant temperature
+  engine__rpm: Engine speed
+  fuel__level_pct: Fuel level
+  battery__soc: State of charge
+alert:
+  p2p:
+    closing: '{{machine_id}} closing — {{gap_m}} m gap, hold position'
+    blind_spot: '{{machine_id}} behind you — {{gap_m}} m, stop reversing'
+  fatigue:
+    high: Signs of fatigue — take a {{break_min}}-minute break
+  wbv:
+    exposure: Vibration exposure A(8) {{a8}} m/s² — reduce travel speed on rough ground
+  tier:
+    normal: सामान्य
+    advisory: सलाह
+    caution: सावधानी
+    warning: चेतावनी
+    critical: गंभीर
+  seatbelt:
+    unfastened: Fasten your seatbelt — machine is active
+  proximity:
+    person_zone: Person {{distance_m}} m away — {{zone}} zone
+    person_ttc: Person on collision course — {{ttc_s}} s
+  utility:
+    approach: Hold position — utility {{utility_id}} {{distance_m}} m ahead of dig
+      line
+  overhead:
+    approach: Overhead line {{line_id}} within {{distance_m}} m of boom
+  stability:
+    margin_low: Stability margin low ({{margin}}) — reduce the load or reach
+  slope:
+    side_slope: Side slope {{roll_deg}}° — reduce slope or reposition
+  conditions:
+    wind_gust: Gusts {{gust_ms}} m/s — lower the boom
+    lightning: Lightning within {{distance_km}} km — stop work and shelter
+    heat_index: Heat index {{heat_index}} — hydration break due
+    visibility: Visibility {{visibility_m}} m — reduce travel speed
+    ground_risk: Ground risk elevated — slope and traction caution
+  energy:
+    soc_floor: Charge will fall below {{floor_pct}}% before next charge window
+  maintenance:
+    stop_tier: '{{component}}: stop — {{reason}}'
+factor:
+  health_index: Machine condition
+  experience_years: Operator experience
+  operator_prior: Your usual pace
+  temp_c: Temperature
+  temp_excess_c: Heat
+  rain_mm_h: Rain
+  gust_ms: Wind gusts
+  visibility_low: Low visibility
+  soil: Soil type
+  moisture_excess: Wet ground
+  slope_fos: Slope stability
+  start_hour: Time of day
+  day_of_week: Day of week
+  break_overlap_min: Breaks during the task
+  stop_weather_hours: Weather stoppages
+  depth_m: Dig depth
+  energy_prework: Charging before or during the task
+  rain: Rain
+  soil_clay: Clay soil
+  soil_rock: Rocky ground
+  moisture: Ground moisture
+  temperature: Heat
+  visibility: Low visibility
+  operator_skill: Operator skill
+  fatigue: Fatigue
+  truck_wait: Truck availability
+  machine_health: Machine health
+  quantity: Quantity
+  depth: Dig depth
+  haul_distance: Haul distance
+behavior:
+  idle: Idling
+  harsh_swing: Harsh swing
+  travel_boom_raised: Travel with boom raised
+  belt_off: Operating unbelted
+  over_slope: Working beyond slope limit
+  relief_stall: Relief-valve stall
+  overload: Overload
+  cavitation: Cavitation
+  high_rpm_idle: High-RPM idle
+maintenance:
+  state:
+    open: Open
+    acknowledged: Acknowledged
+    scheduled: Scheduled
+    in_service: In service
+    resolved: Resolved
+    false_alarm: False alarm
+  safe:
+    'yes': 'Yes'
+    limited: Limited — reduce load and monitor
+    'no': No — stop and call a technician
+  action:
+    ack: Acknowledge
+    schedule: Schedule
+    start: Start service
+    resolve: Resolve
+    false_alarm: False alarm
+    work_order: Create work order
+    work_order_done: Work order created
+  tier:
+    monitor: Monitor
+    service_soon: Service soon
+    stop: Stop
+  component:
+    engine: Engine
+    hydraulic_pump: Hydraulic pump
+    swing_drive: Swing drive
+    undercarriage: Undercarriage
+    get: Ground-engaging tools
+    dpf: Diesel particulate filter
+    final_drive: Final drive
+    cooling: Cooling system
+    electrical: Electrical system
+    transmission: Transmission
+    brakes: Brakes
+    tyres: Tyres
+    battery: Battery pack
+    articulation: Articulation joint
+    dump_body: Dump body
+    axles: Axles
+    bucket_linkage: Bucket linkage
+    service: Scheduled service
+walkaround:
+  budget: Takes about {{s}} seconds
+  critical: ' · critical'
+  photo_added: Photo added
+  photo_required: Add a photo for each item marked as an issue
+  submit: Submit walkaround
+  blocks_start: A critical issue blocks the start
+  result:
+    ok: Walkaround OK
+    issues: Issues reported — maintenance notified
+    critical: Critical issue — do not start
+  status_ok: OK
+  status_issue: Issue
+  add_photo: Add photo
+  item:
+    tracks: Tracks, rollers and idlers
+    tyres: Tyres and rims
+    hoses: Hydraulic hoses and fittings
+    leaks: Leaks under the machine
+    bucket_teeth: Bucket teeth and cutting edge
+    mirrors_cameras: Mirrors and cameras
+    lights_beacon: Lights and beacon
+    fluid_levels: Engine oil, coolant and hydraulic oil levels
+    seatbelt: Seatbelt condition
+    fire_extinguisher: Fire extinguisher
+    steps_handrails: Steps and handrails
+    articulation_lock: Articulation lock removed
+    dump_body: Dump body and hinge pins
+    brakes_test: Service and parking brake test
+    battery_connector: Charging connector and cable
+    coolant_battery: Battery coolant level
+workflow:
+  incident:
+    new: New
+    under_review: Under review
+    root_cause: Root cause identified
+    corrective_action: Corrective action
+    closed: Closed
+fault:
+  hyd_pump_01: Hydraulic pump wear
+  hyd_filt_03: Hydraulic filter restriction
+  hyd_temp_02: Hydraulic oil over-temperature
+  cool_rad_02: Radiator restriction
+  cool_temp_01: Engine over-temperature
+  eng_oilp_01: Low engine oil pressure
+  eng_air_01: Air filter restriction
+  eng_wif_01: Water in fuel
+  dpf_soot_01: DPF soot load high
+  ele_alt_01: Alternator not charging
+  swg_vib_01: Swing drive vibration
+  uc_trk_01: Track tension out of range
+  get_wear_01: Bucket teeth worn
+  tyr_leak_01: Slow tyre leak
+  trn_temp_01: Transmission over-temperature
+  brk_temp_01: Brake over-temperature
+  bat_cell_01: Battery cell imbalance
+  bat_iso_01: High-voltage insulation fault
+training:
+  minutes: '{{n}} min'
+  progress: '{{done}} of {{total}} lessons'
+  assigned: Assigned to you
+  reason:
+    cavitation: Assigned after cavitation events
+    idle: Assigned after excessive idling
+    belt_off: Assigned after seatbelt violations
+    near_miss_pedestrian: Assigned after a pedestrian near miss
+    cert_expiring: Certification expiring
+    cert_expiry: Certification expiring
+    anomaly: Assigned from your scorecard
+  cert_expiring: '{{module}} expires in {{days}} days'
+  sync: Refresh my assignments
+  video_pending: The video for this module is not produced yet
+  quiz_pending: Quiz questions for this module are not published yet
+  submit_quiz: Submit answers
+  quiz_passed: Passed — {{score}} (pass mark {{mark}})
+  quiz_failed: Not passed — {{score}} (pass mark {{mark}})
+  correct_answer: 'Correct answer: {{answer}}'
+  see_manual: 'See the manual: {{heading}}'
+  choose_module: Choose a module
+  places: '{{free}} of {{capacity}} places'
+  book: Book
+  booked: Session booked
+  mode:
+    on_site: On site
+    remote: Remote
+    simulator: Simulator bay
+  error:
+    slot_not_found: That session no longer exists
+    slot_full: That session is full
+    already_booked: You have already booked this session
+    shift_clash: That session clashes with your assigned shift
+    cancel_window: Too late to cancel this session
+    not_found: Booking not found
+  module:
+    safety_basics: Site safety basics
+    restraint_safety: Restraint and rollover safety
+    proximity_awareness: Proximity awareness
+    fuel_efficient_operation: Fuel-efficient operation
+    excavator_controls: Excavator controls
+    trenching_101: Trenching fundamentals
+    stick_bucket_control: Stick and bucket control
+    electric_machine_safety: Electric machine safety
+    loader_controls: Wheel loader controls
+    adt_operation: Articulated dump truck operation
+  video:
+    safety_basics_01: Working safely on site
+    restraint_safety_01: Why the seatbelt matters
+    excavator_controls_01: Excavator controls walkthrough
+    trenching_101_01: Trenching to grade
+    fuel_efficient_01: The real cost of idling
+    stick_bucket_01: Smooth stick and bucket control
+    proximity_awareness_01: People around machines
+    loader_controls_01: Wheel loader basics
+    adt_operation_01: Hauling safely
+    electric_safety_01: High-voltage safety
+  chapter:
+    intro: Introduction
+    ppe: Personal protective equipment
+    exclusion_zones: Exclusion zones
+    rollover: Rollover protection
+    iso_pattern: ISO control pattern
+    smooth_swing: Smooth swinging
+    utilities: Buried utilities
+    grade: Working to grade
+    idle_cost: Idle cost
+    cavitation: Avoiding cavitation
+    retarder: Using the retarder
+    hv_isolation: High-voltage isolation
+  drill:
+    grade: Dig to grade
+    truck_fill: Fill a truck to target
+    pedestrian: Pedestrian crossing
+    smooth_swing: Smooth swing
+    slope: Slope work
+llm_template:
+  live_narration:
+    default: '{{category}} advisory'
+    grade: Adjust bucket {{deviation_cm}} cm — {{direction}} to design grade
+    proximity: Person {{distance_m}} m away — watch your swing
+    proximity_ttc: Person {{distance_m}} m away, closing in {{ttc_s}} s — stop the
+      swing
+    utility: Hold position — utility {{utility_id}} {{distance_m}} m ahead, dig by
+      hand
+    stability_reduce_reach: Stability margin {{margin}} — reduce reach
+    stability_lower_load: Stability margin {{margin}} — lower the load
+    stability_stop_slew: Stability margin {{margin}} — stop slewing
+    weather: Gusts {{gust_ms}} m/s — keep the boom low
+    cavitation: Pump ripple {{ripple_bar}} bar — ease the stick input
+    hydraulic_temp: Hydraulic oil {{oil_temp_c}} °C — avoid relief stalls
+    payload: Pass {{payload_t}} t of {{rated_t}} t — fill the bucket more
+    idle: Engine idling {{idle_min}} min — consider shutting down
+    idle_cost: Engine idling {{idle_min}} min, cost {{cost}} so far — shut down while
+      waiting
+    pacing: '{{behind_pct}}% behind plan — keep cycles steady'
+    fatigue: Signs of fatigue — take a {{break_min}}-minute break
+    maintenance: '{{component}}: {{tier}} — reduce load, a technician is informed'
+    maintenance_eta: '{{component}} trending to {{tier}} in about {{eta_h}} h — reduce
+      load'
+    energy: 'Enough charge for this task: {{answer}}'
+    energy_ok: Enough energy for this task — margin {{margin_pct}}%
+    energy_short: Not enough energy for this task — charge {{charge_min}} min first
+    plan: Best start {{start}} — saves about {{saving_min}} min
+    power_mode_eco: Light digging — switch to Eco mode
+    power_mode_standard: Switch to Standard power mode
+    power_mode_high: Heavy digging — High power mode helps
+  maint_explainer:
+    summary: '{{component}}: {{tier}} — {{reason}}'
+    likely_cause: See the fault catalogue entry {{code}}
+    next_step: Follow procedure {{code}} in the manual
+  plan_explainer:
+    text: Starting at {{recommended_start}} is expected to save about {{saving_min}}
+      min
+  summaries:
+    text: Summary unavailable — showing facts only
+  cannot_answer: I can't answer that from the available data.
+  escalate: Sent to a technician for review.
+error:
+  slot_not_found: That session no longer exists
+  slot_full: That session is full
+  already_booked: You have already booked this session
+  shift_clash: That session clashes with your assigned shift
+  cancel_window: Too late to cancel this session
+  quiz_unavailable: Quiz questions are not published yet
+  walkaround_incomplete: Answer every checklist item
+  walkaround_photo_required: Add a photo for each issue
+  stt_unavailable: Voice notes are unavailable — please type the note
+  unsupported_media: That file type is not supported
+  too_large: The file is too large
+  task_unassigned: This task has no machine assigned yet
+  invalid_transition: That action is not allowed in the current state
+  invalid: The request is not valid
+  unauthorized: Please sign in again
+  forbidden: You do not have access to this screen
+  not_found: Not found
+  config_invalid: Configuration is invalid
+task:
+  type:
+    trench: ट्रेंचिंग
+    bulk_excavation: Bulk excavation
+    truck_loading: ट्रक लोडिंग
+    grading: ग्रेडिंग
+    backfill: Backfill
+    load_and_carry: लोड और कैरी
+    stockpile: Stockpile
+    haul: Haul
+    bulk_earthmoving: थोक मिट्टी कार्य
+    pipe_laying: पाइप बिछाना
+    stockpiling: स्टॉकपाइलिंग
+  status:
+    planned: Planned
+    carried_over: Carried over
+    in_progress: प्रगति पर
+    completed: पूर्ण
+    pending: लंबित
+    paused: रुका हुआ
+unit:
+  m3: घन मी
+  loads: loads
+  m: मी
+  t: टन
+  h: घंटे
+  min: मिनट
+  kph: किमी/घं
+sign:
+  plus: +
+  minus: −
+readiness:
+  band:
+    go: Ready
+    caution: Check before start
+    hold: Hold
+  blocked: A critical walkaround issue blocks the start
+  deduction: '{{what}}: −{{points}}'
+  health: Machine condition
+  open_maint_alerts: Open maintenance alerts
+  energy: Not enough energy for the next task
+  walkaround: Walkaround not done
+  cert: Certification
+plan:
+  constraint:
+    deadline: Deadline
+    weather: Weather stop
+    maintenance_window: Maintenance window
+    readiness: Machine readiness
+    energy: Energy
+  start_time:
+    summary: Recommended start time
+    keep: Start now
+precondition:
+  charge: Charge to {{soc}} ({{minutes}}) — charger {{station}} reserved on accept
+  mid_task_charge: A mid-task charge stop of {{minutes}} is planned
+  refuel: Refuel before start ({{minutes}})
+  maintenance_check: Check the {{component}} alert with a technician
+  during:
+    toolbox_talk: During the toolbox talk
+    break: During the break
+note:
+  tag:
+    maintenance: Maintenance
+    safety: Safety
+    site: Site
+    other: Other
+maint:
+  why:
+    limit: '{{sensor}} is {{value}}, past the {{threshold}} limit'
+    rate: '{{sensor}} is rising {{slope_per_h}} per hour (limit {{limit_per_h}})'
+    forecast: '{{sensor}} will reach {{target_tier}} in about {{eta_h_p50}} h (earliest
+      {{eta_h_p10}} h)'
+    interval: '{{item}} due in {{remaining_h}} h'
+    fault_code: Fault code {{code}} active
+service:
+  item:
+    service_250h: 250 h service
+    service_500h: 500 h service
+    service_1000h: 1000 h service
+    service_2000h: 2000 h service
+    dpf_clean: DPF clean
+incident:
+  kind:
+    incident: Incident
+    near_miss: Near miss
+    hazard: Hazard
+  source:
+    auto: Automatic (black box)
+    manual: Reported
+ask:
+  title: Ask
+  placeholder: Ask about this machine, your tasks or a fault code
+  send: Ask
+  thinking: Working on it
+  talk: Hold to talk
+  citations: Sources
+  trace: How this was answered
+  confidence:
+    label: Confidence
+    high: High
+    medium: Medium
+    low: Low
+  citation:
+    manual: Manual · {{section}} · {{heading}}
+    fault: Fault catalogue {{id}}
+    sql: Site database
+    twin: Live machine state
+    predict: Duration model
+    maint: Maintenance alerts
+    plan: Start-time planner
+    tool: Tool output
+  tool:
+    rag: Manual search
+    fault: Fault lookup
+    sql: Database query
+    twin: Machine state
+    predict: Duration estimate
+    maint: Maintenance
+    plan: Planning
+    action: Draft request
+  not_in_manual: That is not in the manual for this machine. Ask a technician or your
+    dealer.
+  refuse:
+    override: I can't switch off, silence or bypass an alert. Alerts clear on their
+      own when the condition ends; speak to your supervisor if you think one is wrong.
+    policy: I can't help with that request.
+    injection: That message looks like it is trying to change my instructions, so
+      I have ignored it.
+    too_long: That message is too long. Please shorten it.
+    data_scope: I can only look up data for your own machine and site.
+    unavailable: The safety check is unavailable, so I can't answer right now.
+  redirect:
+    legal: I can't give legal or liability advice. Please raise this with your supervisor.
+    medical: I can't give medical advice. Contact your site first-aider or supervisor.
+    off_topic: I can only help with operating, maintaining and planning work on your
+      machines.
+  escalate:
+    vlm: I'm not confident enough about this photo. I've sent it to a technician for
+      review.
+  action:
+    confirm: Review and confirm before this is sent.
+    service_request: Draft service request
+    booking: Draft booking
+    incident: Draft incident report
+    accept_start: Accept the recommended start time

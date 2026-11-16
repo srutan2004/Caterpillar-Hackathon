@@ -1,0 +1,91 @@
+# Design tokens. The frontend installs these as CSS variables (--<group>-<name>).
+# Nothing visual is hardcoded in apps/web; every colour, size and radius comes from here.
+default_variant: dark
+variants:
+  dark:
+    color:
+      bg: "#0f1216"
+      surface: "#171b21"
+      surface_raised: "#1f252d"
+      border: "#2c333d"
+      text: "#e8ecf1"
+      text_muted: "#9aa4b2"
+      primary: "#f2b01e"
+      primary_text: "#15120a"
+      focus: "#5cb8ff"
+      danger: "#ef4444"
+    alert:
+      advisory: {bg: "#1d3557", fg: "#dbeafe", border: "#3b82f6"}
+      caution: {bg: "#5c4400", fg: "#fff4cc", border: "#f2b01e"}
+      warning: {bg: "#6b0f14", fg: "#ffe4e6", border: "#ef4444"}
+      normal: {bg: "#12301f", fg: "#dcfce7", border: "#22c55e"}
+    # data-viz roles (validated with the dataviz palette checks against this variant's surface)
+    chart: {series_1: "#3987e5", series_2: "#d55181", band: "#3987e533", grid: "#2c333d", reference: "#9aa4b2", infeasible: "#ffffff14"}
+  light:
+    color:
+      bg: "#f4f5f7"
+      surface: "#ffffff"
+      surface_raised: "#fbfbfc"
+      border: "#d6dae0"
+      text: "#14181e"
+      text_muted: "#5b6573"
+      primary: "#c98a00"
+      primary_text: "#ffffff"
+      focus: "#1d6fd8"
+      danger: "#c81e1e"
+    alert:
+      advisory: {bg: "#e0ecff", fg: "#12305c", border: "#3b82f6"}
+      caution: {bg: "#fff3c4", fg: "#4a3500", border: "#c98a00"}
+      warning: {bg: "#ffe1e3", fg: "#5f0a10", border: "#c81e1e"}
+      normal: {bg: "#e3f7ea", fg: "#0e3b20", border: "#16a34a"}
+    chart: {series_1: "#2a78d6", series_2: "#e87ba4", band: "#2a78d626", grid: "#e5e8ec", reference: "#5b6573", infeasible: "#0000000f"}
+  high_contrast:
+    color:
+      bg: "#000000"
+      surface: "#000000"
+      surface_raised: "#111111"
+      border: "#ffffff"
+      text: "#ffffff"
+      text_muted: "#e5e5e5"
+      primary: "#ffd400"
+      primary_text: "#000000"
+      focus: "#00e5ff"
+      danger: "#ff3b3b"
+    alert:
+      advisory: {bg: "#001a66", fg: "#ffffff", border: "#66a3ff"}
+      caution: {bg: "#664d00", fg: "#ffffff", border: "#ffd400"}
+      warning: {bg: "#660000", fg: "#ffffff", border: "#ff3b3b"}
+      normal: {bg: "#003300", fg: "#ffffff", border: "#33ff66"}
+    chart: {series_1: "#3987e5", series_2: "#d55181", band: "#3987e540", grid: "#444444", reference: "#e5e5e5", infeasible: "#ffffff1f"}
+
+# Size tokens are unit-bearing strings, so the frontend never writes a px literal.
+space: {"0": "0", "1": "4px", "2": "8px", "3": "12px", "4": "16px", "5": "24px", "6": "32px", "7": "48px"}
+radius: {sm: "4px", md: "8px", lg: "12px", pill: "999px"}
+border_width: {thin: "1px", thick: "3px"}
+font:
+  family: "'Inter', 'Noto Sans', 'Segoe UI', system-ui, sans-serif"
+  family_mono: "'JetBrains Mono', 'Cascadia Mono', ui-monospace, monospace"
+  size: {xs: "12px", sm: "14px", md: "16px", lg: "20px", xl: "28px", xxl: "40px"}
+  weight: {regular: "400", medium: "500", bold: "700"}
+  line_height: {tight: "1.2", normal: "1.5"}
+target:
+  min_cab: "56px"
+  min_mobile: "44px"
+  min_desk: "32px"
+layout:
+  max_form_width: "420px"
+  header_height: "56px"
+  nav_width: "220px"
+motion:
+  duration_fast: "120ms"
+  duration_normal: "240ms"
+alert_behaviour:
+  advisory: {sound: none, flash_ms: 0}
+  caution: {sound: chime_soft, flash_ms: 0}
+  warning: {sound: chime_urgent, flash_ms: 600}
+device_theme:
+  cab: dark
+  mobile: dark
+  desk: light
+breakpoints:
+  mobile_max: "760px"

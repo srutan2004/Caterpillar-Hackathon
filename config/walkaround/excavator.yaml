@@ -1,0 +1,13 @@
+id: walkaround_excavator
+time_budget_s: 60
+items:
+  - {id: tracks, label_key: walkaround.item.tracks, critical: false, photo: optional}
+  - {id: hoses, label_key: walkaround.item.hoses, critical: true, photo: on_issue}
+  - {id: leaks, label_key: walkaround.item.leaks, critical: true, photo: on_issue}
+  - {id: bucket_teeth, label_key: walkaround.item.bucket_teeth, critical: false, photo: on_issue}
+  - {id: fluid_levels, label_key: walkaround.item.fluid_levels, critical: true, photo: none}
+  - {id: mirrors_cameras, label_key: walkaround.item.mirrors_cameras, critical: true, photo: none}
+  - {id: lights_beacon, label_key: walkaround.item.lights_beacon, critical: false, photo: none}
+  - {id: seatbelt, label_key: walkaround.item.seatbelt, critical: true, photo: on_issue}
+  - {id: fire_extinguisher, label_key: walkaround.item.fire_extinguisher, critical: true, photo: none}
+  - {id: steps_handrails, label_key: walkaround.item.steps_handrails, critical: false, photo: none}

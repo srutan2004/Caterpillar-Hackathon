@@ -1,0 +1,9 @@
+screen: incidents
+device: any
+grid: {columns: 12, rows: 8, gap_token: space.3}
+modes:
+  normal: {hide: []}
+widgets:
+  - {id: header, type: ScreenHeader, area: [1, 1, 12, 1], bind: "screen:incidents", props: {title_key: screen.incidents.title}}
+  - {id: report, type: FormView, area: [1, 2, 5, 7], bind: "form:incident_report", props: {form_id: incident_report, action: incidents.create}}
+  - {id: playback, type: IncidentPlayback, area: [6, 2, 7, 7], bind: "resource:incidents"}

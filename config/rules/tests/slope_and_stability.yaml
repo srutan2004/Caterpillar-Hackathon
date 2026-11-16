@@ -1,0 +1,13 @@
+id: side_slope_escalation
+manifest: excavator_20t
+tick_s: 1
+until_s: 30
+frames:
+  - {t: 0, set: {imu.roll_deg: 2, stability.margin: 3.0}}
+  - {t: 5, set: {imu.roll_deg: 11}}
+  - {t: 12, set: {imu.roll_deg: 16}}
+  - {t: 20, set: {imu.roll_deg: 3}}
+expect:
+  - {t: 7, rule: SIDE_SLOPE, phase: open, severity: caution}
+  - {t: 12, rule: SIDE_SLOPE, phase: escalate, severity: warning}
+  - {t: 23, rule: SIDE_SLOPE, phase: clear, severity: warning}

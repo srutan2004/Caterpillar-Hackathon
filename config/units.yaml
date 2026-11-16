@@ -1,0 +1,43 @@
+# Values travel in SI; the frontend formats them with formatValue(quantity, value) using this table.
+systems:
+  metric:
+    quantities:
+      length: {unit: m, symbol: m, factor: 1.0, precision: 1}
+      short_length: {unit: cm, symbol: cm, factor: 100.0, precision: 0}
+      speed: {unit: kph, symbol: km/h, factor: 3.6, precision: 1}
+      pressure: {unit: bar, symbol: bar, factor: 1.0e-5, precision: 0}
+      temperature: {unit: degC, symbol: °C, offset: -273.15, factor: 1.0, precision: 0}
+      angle: {unit: deg, symbol: °, factor: 57.29577951308232, precision: 1}
+      volume: {unit: m3, symbol: m³, factor: 1.0, precision: 1}
+      fuel_volume: {unit: l, symbol: L, factor: 1000.0, precision: 1}
+      mass: {unit: t, symbol: t, factor: 0.001, precision: 1}
+      energy: {unit: kwh, symbol: kWh, factor: 2.7777777777777776e-7, precision: 1}
+      power: {unit: kw, symbol: kW, factor: 0.001, precision: 0}
+      duration: {unit: min, symbol: min, factor: 0.016666666666666666, precision: 0}
+      ratio: {unit: pct, symbol: "%", factor: 100.0, precision: 0}
+      acceleration: {unit: ms2, symbol: m/s², factor: 1.0, precision: 2}
+      currency: {unit: inr, symbol: ₹, factor: 1.0, precision: 0}
+      seconds: {unit: s, symbol: s, factor: 1.0, precision: 1}
+      factor: {unit: x, symbol: ×, factor: 1.0, precision: 2}
+  imperial:
+    quantities:
+      length: {unit: ft, symbol: ft, factor: 3.280839895, precision: 1}
+      short_length: {unit: in, symbol: in, factor: 39.37007874, precision: 1}
+      speed: {unit: mph, symbol: mph, factor: 2.236936292, precision: 1}
+      pressure: {unit: psi, symbol: psi, factor: 1.450377377e-4, precision: 0}
+      temperature: {unit: degF, symbol: °F, offset: -459.67, factor: 1.8, precision: 0}
+      angle: {unit: deg, symbol: °, factor: 57.29577951308232, precision: 1}
+      volume: {unit: yd3, symbol: yd³, factor: 1.307950619, precision: 1}
+      fuel_volume: {unit: gal, symbol: gal, factor: 264.1720524, precision: 1}
+      mass: {unit: ton, symbol: ton, factor: 0.00110231, precision: 1}
+      energy: {unit: kwh, symbol: kWh, factor: 2.7777777777777776e-7, precision: 1}
+      power: {unit: hp, symbol: hp, factor: 0.00134102, precision: 0}
+      duration: {unit: min, symbol: min, factor: 0.016666666666666666, precision: 0}
+      ratio: {unit: pct, symbol: "%", factor: 100.0, precision: 0}
+      acceleration: {unit: ms2, symbol: m/s², factor: 1.0, precision: 2}
+      currency: {unit: inr, symbol: ₹, factor: 1.0, precision: 0}
+      seconds: {unit: s, symbol: s, factor: 1.0, precision: 1}
+      factor: {unit: x, symbol: ×, factor: 1.0, precision: 2}
+default_system: metric
+system_by_locale:
+  en: metric

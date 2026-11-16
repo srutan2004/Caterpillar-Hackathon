@@ -1,0 +1,61 @@
+# Training records (§7.3 Training, §10.8).
+modules:
+  - {id: safety_basics, title_key: training.module.safety_basics, machine_class: common, kind: course, prerequisites: [], est_minutes: 45}
+  - {id: restraint_safety, title_key: training.module.restraint_safety, machine_class: common, kind: course, prerequisites: [safety_basics], est_minutes: 20}
+  - {id: proximity_awareness, title_key: training.module.proximity_awareness, machine_class: common, kind: course, prerequisites: [safety_basics], est_minutes: 30}
+  - {id: fuel_efficient_operation, title_key: training.module.fuel_efficient_operation, machine_class: common, kind: course, prerequisites: [], est_minutes: 25}
+  - {id: excavator_controls, title_key: training.module.excavator_controls, machine_class: excavator, kind: course, prerequisites: [safety_basics], est_minutes: 60}
+  - {id: trenching_101, title_key: training.module.trenching_101, machine_class: excavator, kind: course, prerequisites: [excavator_controls], est_minutes: 50}
+  - {id: stick_bucket_control, title_key: training.module.stick_bucket_control, machine_class: excavator, kind: drill, prerequisites: [excavator_controls], est_minutes: 30}
+  - {id: electric_machine_safety, title_key: training.module.electric_machine_safety, machine_class: excavator, kind: course, prerequisites: [safety_basics], est_minutes: 40}
+  - {id: loader_controls, title_key: training.module.loader_controls, machine_class: wheel_loader, kind: course, prerequisites: [safety_basics], est_minutes: 50}
+  - {id: adt_operation, title_key: training.module.adt_operation, machine_class: adt, kind: course, prerequisites: [safety_basics], est_minutes: 50}
+lessons_per_module: {video: 1, quiz: 1, reading: 1}
+drills:
+  - {id: drill_grade, title_key: training.drill.grade, module: trenching_101}
+  - {id: drill_truck_fill, title_key: training.drill.truck_fill, module: excavator_controls}
+  - {id: drill_pedestrian, title_key: training.drill.pedestrian, module: proximity_awareness}
+  - {id: drill_smooth_swing, title_key: training.drill.smooth_swing, module: stick_bucket_control}
+  - {id: drill_slope, title_key: training.drill.slope, module: excavator_controls}
+completion:
+  quiz_score_k: 0.35            # score = sigmoid(logit(0.7) + k·(skill − 0.5)·4) with noise
+  pass_mark: 0.7
+  completion_ratio: 0.9
+  questions_per_attempt: 4
+assignment:                     # §10.8.5 adaptive assignment
+  window_days: 30
+  due_days: 14
+  cert_lead_days: 21
+booking:
+  cancel_window_h: 12           # cancel/reschedule is refused inside this window
+certs:
+  issued_days_ago: {min: 20, max: 380}
+  expiring_soon_fraction: 0.12   # expires within expiring_window_days
+  expiring_window_days: 21
+slots:
+  per_instructor_per_week: 6
+  weeks_back: 6
+  weeks_ahead: 3
+  modes: {onsite: 0.5, remote: 0.3, simulator: 0.2}
+  capacity: {onsite: 4, remote: 8, simulator: 1}
+  duration_h: {onsite: 2, remote: 1, simulator: 1}
+  booking_fill_rate: 0.55
+sim_sessions:
+  per_operator_per_month: 1.2
+  score_skill_k: 60
+  score_base: 35
+  score_noise_sd: 8
+assignments:
+  due_days: 14
+# Which approved manual sections ground each module's quiz bank (`tp content --task quizzes`).
+quiz_sources:
+  safety_basics: [common/site_rules, excavator/safety]
+  restraint_safety: [excavator/safety]
+  proximity_awareness: [common/site_rules, excavator/safety]
+  fuel_efficient_operation: [excavator/operating]
+  excavator_controls: [excavator/controls]
+  trenching_101: [excavator/operating, excavator/safety]
+  stick_bucket_control: [excavator/operating]
+  electric_machine_safety: [excavator/safety, excavator/fluids]
+  loader_controls: [wheel_loader/controls, wheel_loader/operating]
+  adt_operation: [adt/operating, adt/safety]

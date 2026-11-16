@@ -1,0 +1,46 @@
+# Task and schedule generation (§7.3 Planning).
+projects_per_site: {min: 2, max: 3}
+task_types:
+  highway_cut:
+    excavator: [{type: bulk_excavation, w: 0.5}, {type: truck_loading, w: 0.35}, {type: grading, w: 0.15}]
+    wheel_loader: [{type: load_and_carry, w: 0.6}, {type: stockpile, w: 0.4}]
+    adt: [{type: haul, w: 1.0}]
+  quarry:
+    excavator: [{type: truck_loading, w: 0.7}, {type: bulk_excavation, w: 0.3}]
+    wheel_loader: [{type: truck_loading, w: 0.5}, {type: stockpile, w: 0.5}]
+    adt: [{type: haul, w: 1.0}]
+  urban_excavation:
+    excavator: [{type: trench, w: 0.55}, {type: bulk_excavation, w: 0.25}, {type: backfill, w: 0.2}]
+    wheel_loader: [{type: load_and_carry, w: 1.0}]
+    adt: [{type: haul, w: 1.0}]
+quantity:
+  trench: {unit: m3, min: 90, max: 260, depth_m: {min: 1.2, max: 4.5}}
+  bulk_excavation: {unit: m3, min: 200, max: 520, depth_m: {min: 1.0, max: 5.0}}
+  truck_loading: {unit: m3, min: 220, max: 600, depth_m: {min: 0.5, max: 3.0}}
+  grading: {unit: m3, min: 80, max: 220, depth_m: {min: 0.1, max: 0.6}}
+  backfill: {unit: m3, min: 120, max: 300, depth_m: {min: 0.5, max: 3.0}}
+  load_and_carry: {unit: m3, min: 150, max: 420, haul_distance_m: {min: 40, max: 180}}
+  stockpile: {unit: m3, min: 200, max: 500, haul_distance_m: {min: 20, max: 60}}
+  haul: {unit: loads, min: 10, max: 26, haul_distance_m: {min: 600, max: 2600}, grade_pct: {min: 0, max: 8}}
+planned_rate_per_h:                # planner's physics-style estimate used for planned_end
+  trench: 85
+  bulk_excavation: 140
+  truck_loading: 160
+  grading: 70
+  backfill: 120
+  load_and_carry: 110
+  stockpile: 150
+  haul_loads_per_h_per_km: 2.3
+planning_buffer: 1.1
+tasks_per_machine_day: {min: 2, max: 3}
+priority: {values: [1, 2, 3, 4, 5], weights: [0.1, 0.2, 0.4, 0.2, 0.1]}
+dependency_prob: 0.15
+deadline_slack_h: {min: 0.5, max: 3.0}
+start_variation:
+  normal_offset_min: {mean: 4, sd: 9}
+  rain_delay: {lookback_h: 12, rain_mm_threshold: 5, prob: 0.45, delay_min: {min: 30, max: 150}}
+  early_start: {prob: 0.08, advance_min: {min: 10, max: 40}}
+  min_start_before_shift_end_h: 1.0
+id_format:
+  history: "T-{n:05d}"
+  project: "P-{site}-{n:02d}"

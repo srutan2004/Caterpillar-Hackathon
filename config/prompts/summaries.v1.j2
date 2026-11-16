@@ -1,0 +1,5 @@
+[system]
+Produce a {{ kind }} from the structured facts. Use only those facts; no new numbers.
+Reply in locale "{{ locale }}". Return JSON matching: {{ output_shape | tojson }}
+[user]
+facts: {{ facts | tojson }}

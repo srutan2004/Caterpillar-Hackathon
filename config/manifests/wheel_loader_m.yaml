@@ -1,0 +1,98 @@
+id: wheel_loader_m
+class: wheel_loader
+name_key: machine.model.wheel_loader_m
+powertrain: diesel
+kinematics: loader_lift_arm
+id_prefix: WL
+specs:
+  cog_height_m: 1.4
+  operating_mass_kg: 18200
+  wheelbase_m: 3.35
+  track_width_m: 2.2
+  rear_overhang_m: 2.4
+  rear_body_width_m: 2.6
+  lift_arm: {length_m: 2.9, mass_kg: 1400, pivot: [1.2, 2.0]}
+  bucket: {length_m: 1.3, mass_kg: 1500, capacity_m3: 3.2}
+  rated_payload_t: 5.4
+  tipping_load_full_turn_t: 11.6
+  max_travel_speed_kph: 38
+  idle_fuel_lph: 2.9
+  work_fuel_lph: {eco: 12.5, standard: 15.0, high: 17.5}
+sensors:
+  - {id: hydraulic.pump_pressure, unit: bar, range: [0, 300], hz: 10,
+     bands: {normal: [0, 250], caution: [250, 275], warning: [275, 300]}}
+  - {id: hydraulic.oil_temp, unit: degC, range: [-20, 120], hz: 1,
+     bands: {normal: [-20, 85], caution: [85, 95], warning: [95, 120]}}
+  - {id: hydraulic.pressure_ripple, unit: bar, range: [0, 40], hz: 1}
+  - {id: hydraulic.filter_dp, unit: bar, range: [0, 5], hz: 1}
+  - {id: engine.rpm, unit: rpm, range: [0, 2400], hz: 10}
+  - {id: engine.load_pct, unit: pct, range: [0, 100], hz: 1}
+  - {id: engine.coolant_temp, unit: degC, range: [-20, 130], hz: 1,
+     bands: {normal: [-20, 98], caution: [98, 105], warning: [105, 130]}}
+  - {id: engine.oil_pressure, unit: kPa, range: [0, 700], hz: 1}
+  - {id: engine.air_filter_restriction, unit: kPa, range: [0, 10], hz: 1}
+  - {id: transmission.oil_temp, unit: degC, range: [-20, 140], hz: 1}
+  - {id: brakes.temp, unit: degC, range: [-20, 400], hz: 1}
+  - {id: tyre.pressure_kpa, unit: kPa, range: [0, 700], hz: 0.1, per_position: [fl, fr, rl, rr]}
+  - {id: tyre.temp, unit: degC, range: [-20, 120], hz: 0.1, per_position: [fl, fr, rl, rr]}
+  - {id: fuel.level_pct, unit: pct, range: [0, 100], hz: 1}
+  - {id: fuel.water_in_fuel, type: bool}
+  - {id: dpf.soot_load_pct, unit: pct, range: [0, 120], hz: 1}
+  - {id: electrical.system_voltage, unit: V, range: [0, 32], hz: 1}
+  - {id: seat.occupied, type: bool}
+  - {id: seat.belt_fastened, type: bool}
+  - {id: imu.pitch_deg, unit: deg, range: [-45, 45], hz: 10}
+  - {id: imu.roll_deg, unit: deg, range: [-45, 45], hz: 10}
+  - {id: lift_arm.angle_deg, unit: deg, range: [-45, 60], hz: 10}
+  - {id: bucket.angle_deg, unit: deg, range: [-60, 60], hz: 10}
+  - {id: articulation.angle_deg, unit: deg, range: [-40, 40], hz: 10}
+  - {id: motion.ground_speed_kph, unit: kph, range: [0, 40], hz: 10}
+  - {id: payload.weight_t, unit: t, range: [0, 8], hz: 1}
+  - {id: gps.position, type: geo, hz: 1}
+  - {id: camera.rear, type: stream}
+  - {id: radar.rear, type: stream}
+  - {id: p2p.beacon, type: stream}
+envelopes:
+  stability_margin: {advisory: 1.8, caution: 1.5, warning: 1.25}
+  side_slope_deg: {caution: 12, warning: 17}
+  travel_speed_bucket_raised_kph: {caution: 8.0}
+  payload_ratio: {caution: 1.0, warning: 1.1}
+  relief_pressure_bar: 285
+proximity:
+  zones_m: {advisory: 20, caution: 10, warning: 5}
+  ttc_s: {caution: 6, warning: 3}
+  swing_radius_m: ref:specs.derived.rear_swing_radius
+  min_moving_speed_ms: 0.3
+motion:
+  moving_threshold_kph: 0.5
+  hydraulic_active_pressure_bar: 40
+seatbelt: {grace_s: 5, escalate_after_s: 20}
+idle: {min_episode_s: 180, excessive_s: 600, max_idle_ratio: 0.25, high_rpm_threshold: 1400}
+pre_shift: {walkaround_required: true, seatbelt_check_required: true}
+components: [engine, hydraulic_pump, transmission, brakes, tyres, axles, bucket_linkage, articulation, dpf, cooling, electrical]
+maintenance_sensors:
+  - {id: engine.coolant_temp, component: cooling, limits_ref: maintenance/sensor_limits.yaml#coolant_temp, forecast: true}
+  - {id: engine.oil_pressure, component: engine, limits_ref: maintenance/sensor_limits.yaml#oil_pressure_vs_rpm, normalise_by: engine.rpm}
+  - {id: hydraulic.oil_temp, component: hydraulic_pump, limits_ref: maintenance/sensor_limits.yaml#hyd_oil_temp, forecast: true}
+  - {id: hydraulic.filter_dp, component: hydraulic_pump, limits_ref: maintenance/sensor_limits.yaml#filter_dp, forecast: true}
+  - {id: engine.air_filter_restriction, component: engine, limits_ref: maintenance/sensor_limits.yaml#air_restriction, forecast: true}
+  - {id: dpf.soot_load_pct, component: dpf, limits_ref: maintenance/sensor_limits.yaml#dpf_soot, forecast: true}
+  - {id: transmission.oil_temp, component: transmission, limits_ref: maintenance/sensor_limits.yaml#transmission_temp, forecast: true}
+  - {id: brakes.temp, component: brakes, limits_ref: maintenance/sensor_limits.yaml#brake_temp}
+  - {id: tyre.pressure_kpa, component: tyres, limits_ref: maintenance/sensor_limits.yaml#tyre_pressure_loader, forecast: true}
+  - {id: tyre.temp, component: tyres, limits_ref: maintenance/sensor_limits.yaml#tyre_temp}
+  - {id: fuel.water_in_fuel, component: engine, limits_ref: maintenance/sensor_limits.yaml#wif}
+  - {id: electrical.system_voltage, component: electrical, limits_ref: maintenance/sensor_limits.yaml#sys_voltage}
+service_intervals_ref: maintenance/service_intervals.yaml#wheel_loader_m
+energy:
+  refuel_rate_lpm: 60
+  tank_l: 290
+training:
+  required_modules: [safety_basics, loader_controls]
+  cert_validity_days: 365
+  expiry_grace_days: 14
+walkaround: ref:walkaround/wheel_loader.yaml
+controls: ref:controls/loader_std.yaml
+knowledge_scope: [wheel_loader, common]
+ui:
+  layouts: {cab: ui/layouts/cockpit.cab.wheel_loader.yaml, mobile: ui/layouts/cockpit.mobile.yaml}

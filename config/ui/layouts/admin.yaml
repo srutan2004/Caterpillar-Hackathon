@@ -1,0 +1,14 @@
+screen: admin
+device: any
+grid: {columns: 12, rows: 12, gap_token: space.3}
+modes:
+  normal: {hide: []}
+widgets:
+  - {id: header, type: ScreenHeader, area: [1, 1, 12, 1], bind: "screen:admin", props: {title_key: screen.admin.title}}
+  - {id: stats, type: DashboardStats, area: [1, 2, 12, 2], bind: "none:"}
+  - {id: scenarios, type: ScenarioPlayer, area: [1, 4, 6, 4], bind: "none:"}
+  - {id: fleet, type: FleetStatusBoard, area: [7, 4, 6, 4], bind: "none:"}
+  - {id: llm, type: LlmStatusTile, area: [1, 8, 4, 3], bind: "resource:llm_status"}
+  - {id: evals, type: EvalSummary, area: [5, 8, 4, 3], bind: "none:"}
+  - {id: chat, type: ChatPanel, area: [9, 8, 4, 5], bind: "none:"}
+  - {id: config, type: DataTable, area: [1, 11, 8, 2], bind: "resource:config_validation"}

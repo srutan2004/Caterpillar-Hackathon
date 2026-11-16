@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "text_to_sql",
+  "type": "object",
+  "properties": {
+    "sql": {"type": "string", "minLength": 1},
+    "rationale": {"type": "string"}
+  },
+  "required": ["sql", "rationale"],
+  "additionalProperties": false
+}

@@ -1,0 +1,47 @@
+# Runtime enforcement engine (§13.1): trigger → condition → action, evaluated with safe expressions.
+# Triggers: input | route | tool | output | vlm. Names available in `when`: see copilot/guards.py RuntimeContext.
+rules:
+  - id: REFUSE_OVERRIDE
+    trigger: route
+    when: "intent == 'override_request'"
+    action: refuse
+    message_key: ask.refuse.override
+  - id: REDIRECT_OFF_TOPIC
+    trigger: route
+    when: "intent == 'off_topic'"
+    action: redirect
+    message_key: ask.redirect.off_topic
+  - id: BLOCK_TRUTH_TABLES
+    trigger: tool
+    when: "tool == 'sql' and any_truth_table"
+    action: block
+    message_key: ask.refuse.data_scope
+  - id: BLOCK_SQL_WRITE
+    trigger: tool
+    when: "tool == 'sql' and not sql_select_only"
+    action: block
+    message_key: ask.refuse.data_scope
+  - id: SCOPE_SQL_TO_USER
+    trigger: tool
+    when: "tool == 'sql' and role == 'operator' and not sql_scoped"
+    action: block
+    message_key: ask.refuse.data_scope
+  - id: VLM_ESCALATE_LOW_CONFIDENCE
+    trigger: vlm
+    when: "confidence < min_confidence or (safety_relevant and confidence < safety_confidence)"
+    action: escalate
+    message_key: ask.escalate.vlm
+  - id: NO_ACTION_WITHOUT_CONFIRM
+    trigger: tool
+    when: "tool == 'action' and not confirmed"
+    action: draft_only
+    message_key: ask.action.confirm
+  - id: UNGROUNDED_ANSWER
+    trigger: output
+    when: "uncited_sentences > 0 and cited_sentences == 0"
+    action: bounded_fallback
+    message_key: ask.not_in_manual
+
+vlm:
+  min_confidence: 0.6
+  safety_confidence: 0.8

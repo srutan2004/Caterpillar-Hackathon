@@ -1,0 +1,23 @@
+# Maintenance alert lifecycle (§10.13) and routing.
+states: [open, acknowledged, scheduled, in_service, resolved, false_alarm]
+initial: open
+transitions:
+  open: [acknowledged, scheduled, resolved, false_alarm]
+  acknowledged: [scheduled, resolved, false_alarm]
+  scheduled: [in_service, resolved, false_alarm]
+  in_service: [resolved]
+  resolved: [open]          # auto-reopen on recurrence
+  false_alarm: []
+tiers: [monitor, service_soon, stop]
+fusion:
+  promote_when_independent_layers: 2
+  layers_independent: [limit, rate, forecast, signature, peer, interval, fluid, fault_code]
+  promote_max_tier: service_soon   # agreement can raise to service_soon; only hard limits/fault codes reach stop
+reopen_within_h: 72
+suppress_while_work_order_open: true
+routing:
+  stop: {cab: safety_rule, mobile: true, technician: push, supervisor: push}
+  service_soon: {cab: copilot_advisory, mobile: true, technician: inbox, supervisor: inbox}
+  monitor: {cab: none, mobile: false, technician: dashboard, supervisor: dashboard}
+lead_time:
+  scheduling_buffer_h: 12

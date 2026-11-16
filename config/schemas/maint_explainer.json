@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "maint_explainer",
+  "type": "object",
+  "properties": {
+    "summary": {"type": "string"},
+    "likely_cause": {"type": "string"},
+    "next_step": {"type": "string"}
+  },
+  "required": ["summary", "likely_cause", "next_step"],
+  "additionalProperties": false
+}

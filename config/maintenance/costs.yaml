@@ -1,0 +1,30 @@
+# Repair and wear cost parameters (§10.15.2, §10.15.4). Currency from app.costs.currency.
+labour_rate_per_h: {technician: 1400, senior_technician: 2100, dealer_field_service: 3500}
+site_remoteness_travel_h: {site_north: 1.5, site_quarry: 2.5, site_metro: 0.5}
+downtime_cost_per_h_by_class: {excavator: 6500, wheel_loader: 5000, adt: 5500}
+maintenance_accrual_per_h:
+  excavator: {engine: 55, hydraulic_pump: 40, swing_drive: 20, undercarriage: 70, get: 35, dpf: 12, final_drive: 18, cooling: 10, electrical: 8, battery: 90}
+  wheel_loader: {engine: 50, hydraulic_pump: 30, transmission: 35, brakes: 15, tyres: 85, axles: 20, bucket_linkage: 15, articulation: 10, dpf: 12, cooling: 10, electrical: 8}
+  adt: {engine: 60, transmission: 45, brakes: 20, tyres: 120, axles: 25, articulation: 12, dump_body: 15, dpf: 12, cooling: 10, electrical: 8}
+get_wear:
+  cost_per_tooth_set: 38000
+  tooth_set_life_h: 800          # dig hours per set at abrasiveness 1.0
+  abrasiveness_by_soil: {clay: 0.4, sand: 1.0, rock: 2.2, gravel: 1.4, fill: 0.7}
+repair_durations:            # base hours by (component, work_type); datagen adds noise and modifiers
+  engine: {inspect: 1.5, minor: 4, major: 22}
+  hydraulic_pump: {inspect: 1.0, minor: 3.5, major: 10}
+  swing_drive: {inspect: 1.0, minor: 4, major: 14}
+  undercarriage: {inspect: 1.0, minor: 3, major: 16}
+  get: {inspect: 0.5, minor: 1.5, major: 3}
+  dpf: {inspect: 0.5, minor: 2, major: 5}
+  final_drive: {inspect: 1.0, minor: 4, major: 12}
+  cooling: {inspect: 0.5, minor: 2, major: 6}
+  electrical: {inspect: 0.8, minor: 2, major: 6}
+  battery: {inspect: 1.0, minor: 4, major: 16}
+  transmission: {inspect: 1.0, minor: 5, major: 20}
+  brakes: {inspect: 0.8, minor: 3, major: 8}
+  tyres: {inspect: 0.3, minor: 1.5, major: 3}
+  axles: {inspect: 1.0, minor: 4, major: 14}
+  articulation: {inspect: 0.8, minor: 3, major: 9}
+  dump_body: {inspect: 0.8, minor: 3, major: 8}
+  bucket_linkage: {inspect: 0.8, minor: 2.5, major: 7}

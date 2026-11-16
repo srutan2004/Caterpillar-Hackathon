@@ -1,0 +1,42 @@
+# Training media manifest (§7.7). Every asset carries its licence. `status: to_produce` means the
+# narrated-slide video is generated from the approved lesson script (TTS + slides via ffmpeg) in Phase 3.
+videos:
+  - {id: vid_safety_basics_01, module: safety_basics, title_key: training.video.safety_basics_01, uri: media/videos/safety_basics_01.mp4,
+     duration_s: 420, licence: internal-generated, source: narrated_slides, status: to_produce,
+     chapters: [{t: 0, title_key: training.chapter.intro}, {t: 95, title_key: training.chapter.ppe}, {t: 240, title_key: training.chapter.exclusion_zones}]}
+  - {id: vid_restraint_safety_01, module: restraint_safety, title_key: training.video.restraint_safety_01, uri: media/videos/restraint_safety_01.mp4,
+     duration_s: 300, licence: internal-generated, source: narrated_slides, status: to_produce,
+     chapters: [{t: 0, title_key: training.chapter.intro}, {t: 80, title_key: training.chapter.rollover}]}
+  - {id: vid_excavator_controls_01, module: excavator_controls, title_key: training.video.excavator_controls_01, uri: media/videos/excavator_controls_01.mp4,
+     duration_s: 540, licence: internal-generated, source: narrated_slides, status: to_produce,
+     chapters: [{t: 0, title_key: training.chapter.intro}, {t: 120, title_key: training.chapter.iso_pattern}, {t: 330, title_key: training.chapter.smooth_swing}]}
+  - {id: vid_trenching_101_01, module: trenching_101, title_key: training.video.trenching_101_01, uri: media/videos/trenching_101_01.mp4,
+     duration_s: 600, licence: internal-generated, source: narrated_slides, status: to_produce,
+     chapters: [{t: 0, title_key: training.chapter.intro}, {t: 150, title_key: training.chapter.utilities}, {t: 380, title_key: training.chapter.grade}]}
+  - {id: vid_fuel_efficient_01, module: fuel_efficient_operation, title_key: training.video.fuel_efficient_01, uri: media/videos/fuel_efficient_01.mp4,
+     duration_s: 360, licence: internal-generated, source: narrated_slides, status: to_produce,
+     chapters: [{t: 0, title_key: training.chapter.intro}, {t: 90, title_key: training.chapter.idle_cost}]}
+  - {id: vid_stick_bucket_01, module: stick_bucket_control, title_key: training.video.stick_bucket_01, uri: media/videos/stick_bucket_01.mp4,
+     duration_s: 390, licence: internal-generated, source: narrated_slides, status: to_produce,
+     chapters: [{t: 0, title_key: training.chapter.intro}, {t: 110, title_key: training.chapter.cavitation}]}
+  - {id: vid_proximity_awareness_01, module: proximity_awareness, title_key: training.video.proximity_awareness_01, uri: media/videos/proximity_awareness_01.mp4,
+     duration_s: 330, licence: internal-generated, source: narrated_slides, status: to_produce,
+     chapters: [{t: 0, title_key: training.chapter.intro}, {t: 100, title_key: training.chapter.exclusion_zones}]}
+  - {id: vid_loader_controls_01, module: loader_controls, title_key: training.video.loader_controls_01, uri: media/videos/loader_controls_01.mp4,
+     duration_s: 480, licence: internal-generated, source: narrated_slides, status: to_produce,
+     chapters: [{t: 0, title_key: training.chapter.intro}]}
+  - {id: vid_adt_operation_01, module: adt_operation, title_key: training.video.adt_operation_01, uri: media/videos/adt_operation_01.mp4,
+     duration_s: 480, licence: internal-generated, source: narrated_slides, status: to_produce,
+     chapters: [{t: 0, title_key: training.chapter.intro}, {t: 200, title_key: training.chapter.retarder}]}
+  - {id: vid_electric_safety_01, module: electric_machine_safety, title_key: training.video.electric_safety_01, uri: media/videos/electric_safety_01.mp4,
+     duration_s: 420, licence: internal-generated, source: narrated_slides, status: to_produce,
+     chapters: [{t: 0, title_key: training.chapter.intro}, {t: 160, title_key: training.chapter.hv_isolation}]}
+photos:
+  labels_file: evals/vlm/labels.csv
+  dir: media/photos
+  licence_policy: CC-BY or staged-by-team only
+
+# User uploads (walkaround photos, troubleshooting photos, cab-note audio)
+uploads:
+  image_types: [image/jpeg, image/png, image/webp]
+  image_max_mb: 8
